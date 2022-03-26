@@ -165,7 +165,7 @@ const GlobalStyle = createGlobalStyle`
       font-family:'Maven Pro', sans-serif;
     }
 
-   a {
+   a, button {
      cursor: pointer;
    }
 `;
