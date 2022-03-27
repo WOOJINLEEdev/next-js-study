@@ -47,7 +47,9 @@ export default function Home({ articleList }: HomeProps) {
       <Section>
         <div className="info">
           <Link href="/">
-            <a className="cafe_img"></a>
+            <a className="cafe_img">
+              <span className="visually_hidden">cafe 이미지</span>
+            </a>
           </Link>
           <div className="info_text">
             <Link href="/">
@@ -85,9 +87,9 @@ export default function Home({ articleList }: HomeProps) {
             <ListItem key={String(value.id)}>
               <Link href="/posts/[id]" as={`/posts/${value.id}`}>
                 <div className="post_info">
-                  <h3 className="list_title" key={String(value.id)}>
+                  <strong className="list_title" key={String(value.id)}>
                     {value.title}
-                  </h3>
+                  </strong>
 
                   <div className="user_area">
                     <span>{value.id}</span>

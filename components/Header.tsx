@@ -39,13 +39,23 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
 
       <BtnWrapper>
         <ModeBtn type="button" onClick={handleChangeTheme}>
-          {themeMode === light ? <MdOutlineLightMode /> : <MdDarkMode />}
+          {themeMode === light ? (
+            <>
+              <MdOutlineLightMode />
+              <span className="visually_hidden">라이트 모드</span>
+            </>
+          ) : (
+            <>
+              <MdDarkMode />
+              <span className="visually_hidden">다크 모드</span>
+            </>
+          )}
         </ModeBtn>
         <SearchBtn role="button">
           <GoSearch />
           <span className="visually_hidden">검색 버튼</span>
         </SearchBtn>
-        <MenuBtn role="button">
+        <MenuBtn role="button" id="menu_button" aria-haspopup="true">
           <HiMenu />
           <span className="visually_hidden">메뉴 버튼</span>
         </MenuBtn>

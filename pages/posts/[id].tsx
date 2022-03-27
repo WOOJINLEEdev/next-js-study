@@ -24,6 +24,10 @@ const Post = ({ article }: PostProps) => {
   return (
     <>
       <Head>
+        <meta
+          name="description"
+          content={`WOOJINLEEdev Cafe의 게시글입니다. 제목은 ${article.title} 입니다.`}
+        />
         <title>
           {id}.{article.title}
         </title>
@@ -34,10 +38,12 @@ const Post = ({ article }: PostProps) => {
 
           <div className="user_area">
             <Link href="/">
-              <a className="user_photo"></a>
+              <a className="user_photo">
+                <span className="visually_hidden">사용자 사진</span>
+              </a>
             </Link>
             <div className="user_post_info">
-              <div className="user_name">{article.userId}</div>
+              <div className="user_name">{article.id}</div>
               <div className="post_info">
                 <span className="post_date">
                   {yyyymmdd} {hhmm}
