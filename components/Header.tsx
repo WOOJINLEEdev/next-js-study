@@ -7,16 +7,23 @@ import { GoSearch } from "react-icons/go";
 import { MdOutlineLightMode, MdDarkMode } from "react-icons/md";
 import { useTheme } from "hooks/useTheme";
 import { light } from "styles/theme";
+import { atom, useRecoilState } from "recoil";
 
 interface HeaderProps {
   scrollStatus: boolean;
   cafeTitle: string;
 }
 
+export const menuClickStatus = atom({
+  key: "menuClickStatus",
+  default: false,
+});
+
 const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [showDivider, setShowDivider] = useState(false);
+  const [menuStatus, setMenuStatus] = useRecoilState(menuClickStatus);
 
   useEffect(() => {
     scrollStatus && setTitle(cafeTitle);
@@ -28,6 +35,10 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
   }, [scrollStatus, router.pathname]);
 
   const [themeMode, handleChangeTheme] = useTheme();
+
+  const handleMenuClick = () => {
+    setMenuStatus(true);
+  };
 
   return (
     <Container showDivider={showDivider}>
@@ -51,11 +62,18 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
             </>
           )}
         </ModeBtn>
-        <SearchBtn role="button">
-          <GoSearch />
-          <span className="visually_hidden">검색 버튼</span>
-        </SearchBtn>
-        <MenuBtn role="button" id="menu_button" aria-haspopup="true">
+        <Link href="/search" passHref>
+          <SearchBtn role="button">
+            <GoSearch />
+            <span className="visually_hidden">검색 버튼</span>
+          </SearchBtn>
+        </Link>
+        <MenuBtn
+          role="button"
+          id="menu_button"
+          aria-haspopup="true"
+          onClick={handleMenuClick}
+        >
           <HiMenu />
           <span className="visually_hidden">메뉴 버튼</span>
         </MenuBtn>
@@ -109,18 +127,32 @@ const ModeBtn = styled.button<ModeBtnProps>`
   color: ${(props) => props.theme.colors.titleColor};
 
   & svg {
-    width: 16px;
-    height: 16px;
+    width: 19px;
+    height: 19px;
+    margin: 16px 0;
   }
 `;
 
-const SearchBtn = styled.div`
+const SearchBtn = styled.a`
   width: 38px;
   height: 100%;
+
+  & svg {
+    width: 16px;
+    height: 16px;
+    margin: 17.5px 0;
+    color: ${(props) => props.theme.colors.titleColor};
+  }
 `;
 
 const MenuBtn = styled.div`
   width: 46px;
+
+  & svg {
+    width: 19px;
+    height: 19px;
+    margin: 16px 0;
+  }
 `;
 
 const BtnWrapper = styled.div`

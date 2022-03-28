@@ -4,11 +4,15 @@ import { MdOutlineLocalCafe } from "react-icons/md";
 import { HiOutlinePencil } from "react-icons/hi";
 import { VscBellDot } from "react-icons/vsc";
 import { BsChatDots } from "react-icons/bs";
-import { IoIosArrowDown } from "react-icons/io";
+import MenuList from "components/MenuList";
+import { menuClickStatus } from "components/Header";
+import { useRecoilValue } from "recoil";
 
-const Menu = ({ show }: any) => {
+const Menu = () => {
+  const show = useRecoilValue(menuClickStatus);
+
   return (
-    <MenuWrap className={show ? "" : "menu_hidden"}>
+    <MenuWrap className={show ? "menu_wrap" : "menu_hidden"} show={show}>
       <MenuHeader className="menu_header">
         <div className="user_area">
           <Link href="/login">
@@ -52,7 +56,7 @@ const Menu = ({ show }: any) => {
               <Link href="/">
                 <a className="menu_btn_link">
                   <BsChatDots />
-                  <span>채팅설정</span>
+                  <span>채팅</span>
                 </a>
               </Link>
             </li>
@@ -60,51 +64,35 @@ const Menu = ({ show }: any) => {
         </nav>
       </MenuHeader>
 
-      <MenuMain className="menu_main">
-        <nav aria-labelledby="allBoard">
-          <div>
-            <h2 className="menu_main_title" id="allBoard">
-              <span>전체 게시판</span>
-              <button type="button">
-                <IoIosArrowDown />
-                <span className="visually_hidden">펼치기</span>
-              </button>
-            </h2>
-          </div>
-
-          <ul className="menu_main_list">
-            <li>공지사항</li>
-            <li>등업게시판</li>
-            <li>게시판1</li>
-            <li>게시판2</li>
-            <li>게시판3</li>
-            <li>게시판4</li>
-            <li>게시판5</li>
-            <li>게시판6</li>
-          </ul>
-        </nav>
-      </MenuMain>
+      <MenuList />
     </MenuWrap>
   );
 };
 
 export default Menu;
 
-const MenuWrap = styled.aside`
+export interface MenuWrapProps {
+  show: boolean;
+}
+
+const MenuWrap = styled.aside<MenuWrapProps>`
   position: fixed;
-  display: flex;
+  display: ${(props) => props.show && "flex"};
   flex-direction: column;
   width: 80%;
   min-width: 275px;
   max-width: 300px;
-  height: 100%;
-  z-index: 101;
-  transition: transform 0.3s ease;
-  background-color: #fff;
-  margin: 0;
+  min-height: 100vh;
   top: 0;
   right: 0;
+  margin: 0;
+  background-color: ${(props) => props.theme.colors.bgColor};
+  color: ${(props) => props.theme.colors.titleColor};
   box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.5);
+  z-index: 101;
+  transform: ${(props) => props.show === false && "translateX(310px)"};
+  transition: ${(props) =>
+    props.show ? "transform 0.3s ease" : "transform 0.5s ease"};
 `;
 
 const MenuHeader = styled.div`
@@ -145,7 +133,6 @@ const MenuHeader = styled.div`
       height: 48px;
       text-align: center;
       font-size: 11px;
-      color: #323232;
       vertical-align: top;
 
       & svg {
@@ -153,22 +140,6 @@ const MenuHeader = styled.div`
         height: 28px;
         margin: 0 auto;
       }
-    }
-  }
-`;
-
-const MenuMain = styled.div`
-  padding: 20px;
-
-  & .menu_main_title {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 20px;
-  }
-
-  & .menu_main_list {
-    & li {
-      padding: 10px 0;
     }
   }
 `;

@@ -7,7 +7,6 @@ import Footer from "components/Footer";
 import CustomThemeProvider from "components/CustomThemeProvider";
 import GlobalStyle from "styles/global-styles";
 import Menu from "components/Menu";
-import styled from "styled-components";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [cafeTitle, setCafeTitle] = useState("WOOJINLEEdev Cafe");
@@ -48,8 +47,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <title>WOOJINLEEdev Cafe</title>
           </Head>
           <Header scrollStatus={scrollStatus} cafeTitle={cafeTitle} />
-          {/* <DimmedLayer /> */}
-          {/* <Menu /> */}
+          <Menu />
           <Component {...pageProps} />
           <Footer />
         </CustomThemeProvider>
@@ -59,12 +57,3 @@ function MyApp({ Component, pageProps }: AppProps) {
 }
 
 export default MyApp;
-
-const DimmedLayer = styled.div`
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  z-index: 100;
-  background: rgba(0, 0, 0, 0.1);
-`;
