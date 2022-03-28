@@ -9,10 +9,10 @@ import { IoMdHeartEmpty } from "react-icons/io";
 import { PostItemType } from "pages";
 
 interface PostProps {
-  article: PostItemType;
+  post: PostItemType;
 }
 
-const Post = ({ article }: PostProps) => {
+const Post = ({ post }: PostProps) => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -26,15 +26,15 @@ const Post = ({ article }: PostProps) => {
       <Head>
         <meta
           name="description"
-          content={`WOOJINLEEdev Cafe의 게시글입니다. 제목은 ${article.title} 입니다.`}
+          content={`WOOJINLEEdev Cafe의 게시글입니다. 제목은 ${post.title} 입니다.`}
         />
         <title>
-          {id}.{article.title}
+          {id}.{post.title}
         </title>
       </Head>
       <Container>
         <PostHeader>
-          <h2 className="post_title">{article.title}</h2>
+          <h2 className="post_title">{post.title}</h2>
 
           <div className="user_area">
             <Link href="/">
@@ -43,28 +43,26 @@ const Post = ({ article }: PostProps) => {
               </a>
             </Link>
             <div className="user_post_info">
-              <div className="user_name">{article.id}</div>
+              <div className="user_name">{post.id}</div>
               <div className="post_info">
                 <span className="post_date">
                   {yyyymmdd} {hhmm}
                 </span>
-                <span className="post_check_count">조회 {article.id}</span>
+                <span className="post_check_count">조회 {post.id}</span>
               </div>
             </div>
           </div>
         </PostHeader>
 
         <PostContent>
-          <p>{article.body}</p>
+          <p>{post.body}</p>
         </PostContent>
 
         <BtnList className="fixed_footer">
-          <Link href="/">
-            <a className="back_btn">
-              <HiMenu />
-              <span>목록으로</span>
-            </a>
-          </Link>
+          <a role="button" className="prev_btn" onClick={() => router.back()}>
+            <HiMenu />
+            <span>목록으로</span>
+          </a>
 
           <button type="button" className="like_btn">
             <IoMdHeartEmpty />
@@ -80,7 +78,7 @@ export async function getStaticPaths() {
   const res = await axios.get("https://jsonplaceholder.typicode.com/posts");
   const data = res.data;
 
-  const paths = data.map((item: any) => ({
+  const paths = data.map((item: PostItemType) => ({
     params: { id: String(item.id) },
   }));
 
@@ -93,7 +91,7 @@ export async function getStaticProps({ params }: any) {
   );
   const data = res.data;
 
-  return { props: { article: data } };
+  return { props: { post: data } };
 }
 
 export default Post;
@@ -182,7 +180,7 @@ const BtnList = styled.div`
   background: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
 
-  & .back_btn {
+  & .prev_btn {
     display: flex;
 
     & svg {

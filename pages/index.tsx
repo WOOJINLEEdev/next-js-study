@@ -1,14 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import useSWR from "swr";
 import styled from "styled-components";
 import { GetServerSideProps } from "next";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { formatDate } from "utils/format-date";
 
 interface HomeProps {
-  articleList: PostItemType[];
+  postList: PostItemType[];
+  activeTab: string;
 }
 
 export interface PostItemType {
@@ -25,19 +25,40 @@ export interface ThemeProps {
       bgColor?: string;
       boxColor?: string;
       tabBorderColor?: string;
+      dimmedColor?: string;
     };
   };
 }
 
-const fetcher = (url: string) => axios.get(url).then((res) => res.data);
+const Tabs = {
+  ALL: "",
+  POPULAR: "popular",
+  NOTICE: "notice",
+};
 
-export default function Home({ articleList }: HomeProps) {
+const TABS = [
+  {
+    key: Tabs.ALL,
+    value: "0",
+    name: "전체글",
+    path: "/",
+  },
+  {
+    key: Tabs.POPULAR,
+    value: "1",
+    name: "인기글",
+    path: "/",
+  },
+  {
+    key: Tabs.NOTICE,
+    value: "2",
+    name: "전체공지",
+    path: "/",
+  },
+];
+
+export default function Home({ postList, activeTab }: HomeProps) {
   const [cafeTitle, setCafeTitle] = useState("WOOJINLEEdev Cafe");
-
-  const postUrl = "https://jsonplaceholder.typicode.com/posts";
-  const { data } = useSWR(postUrl, fetcher, {
-    fallbackData: articleList,
-  });
 
   const now = new Date();
   const yymmdd = formatDate(now, "YY.MM.DD");
@@ -52,7 +73,7 @@ export default function Home({ articleList }: HomeProps) {
             </a>
           </Link>
           <div className="info_text">
-            <Link href="/">
+            <Link href="/" passHref>
               <h1 className="info_title">{cafeTitle}</h1>
             </Link>
 
@@ -71,9 +92,22 @@ export default function Home({ articleList }: HomeProps) {
 
       <TabBox>
         <ul>
-          <li>전체글</li>
-          <li>인기글</li>
-          <li>전체공지</li>
+          {TABS.map((tab) => (
+            <li
+              key={tab.key}
+              className={activeTab === tab.key ? "is_active" : ""}
+              value={tab.value}
+            >
+              <Link
+                href={{
+                  pathname: tab.path,
+                  query: tab.key && { tab: tab.key },
+                }}
+              >
+                <a>{tab.name}</a>
+              </Link>
+            </li>
+          ))}
         </ul>
         <button type="button">
           <AiOutlineUserAdd />
@@ -82,10 +116,10 @@ export default function Home({ articleList }: HomeProps) {
       </TabBox>
 
       <ListGroup>
-        {data?.map((value: any) => {
+        {postList?.map((value: PostItemType) => {
           return (
             <ListItem key={String(value.id)}>
-              <Link href="/posts/[id]" as={`/posts/${value.id}`}>
+              <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
                 <div className="post_info">
                   <strong className="list_title" key={String(value.id)}>
                     {value.title}
@@ -102,7 +136,7 @@ export default function Home({ articleList }: HomeProps) {
               </Link>
               <div className="list_img_comment_wrapper">
                 <div className="list_img"></div>
-                <Link href="/posts/[id]" as={`/posts/${value.id}`}>
+                <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
                   <div className="list_comment"></div>
                 </Link>
               </div>
@@ -114,14 +148,25 @@ export default function Home({ articleList }: HomeProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const articleList = await fetcher(
-    "https://jsonplaceholder.typicode.com/posts"
-  );
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const { tab } = query;
+
+  let url = "https://jsonplaceholder.typicode.com/posts";
+  switch (tab) {
+    case Tabs.POPULAR:
+      url += "?userId=10";
+      break;
+    case Tabs.NOTICE:
+      url += "?userId=5";
+      break;
+  }
+
+  const postList = await axios.get(url).then((res) => res.data);
 
   return {
     props: {
-      articleList,
+      postList,
+      activeTab: tab || "",
     },
   };
 };
@@ -205,7 +250,6 @@ const Section = styled.section`
     font-size: 20px;
     line-height: 24px;
     width: 75%;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -248,6 +292,11 @@ const ListItem = styled.li`
   border-bottom: 0.5px solid #e6e6e6;
   word-break: break-word;
   word-wrap: break-word;
+
+  &:last-child {
+    border-bottom: 0;
+    padding-bottom: 22px;
+  }
 
   & .post_info {
     cursor: pointer;
@@ -328,10 +377,18 @@ const TabBox = styled.div`
 
     & li {
       margin-left: 10px;
+
+      & a {
+        color: ${(props) => props.theme.colors.titleColor};
+      }
     }
 
     & li:first-child {
       margin: 0;
+    }
+
+    & .is_active {
+      color: ${(props) => props.theme.colors.titleColor};
       border-bottom: ${(props) => props.theme.colors.tabBorderColor};
     }
   }
