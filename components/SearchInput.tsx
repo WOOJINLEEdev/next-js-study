@@ -82,8 +82,8 @@ const SearchWrap = styled.div`
 `;
 
 const RemoveBtn = styled.button`
-  display: absolute;
-  right: 0;
+  position: absolute;
+  right: 15px;
   padding: 10px;
   cursor: pointer;
 
