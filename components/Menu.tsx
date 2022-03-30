@@ -1,15 +1,20 @@
 import Link from "next/link";
 import styled from "styled-components";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { MdOutlineLocalCafe } from "react-icons/md";
 import { HiOutlinePencil } from "react-icons/hi";
 import { VscBellDot } from "react-icons/vsc";
 import { BsChatDots } from "react-icons/bs";
 import MenuList from "components/MenuList";
 import { menuClickStatus } from "components/Header";
-import { useRecoilValue } from "recoil";
 
 const Menu = () => {
   const show = useRecoilValue(menuClickStatus);
+  const setShowStatus = useSetRecoilState(menuClickStatus);
+
+  function handleBtnClick() {
+    setShowStatus(false);
+  }
 
   return (
     <MenuWrap className={show ? "menu_wrap" : "menu_hidden"} show={show}>
@@ -30,7 +35,7 @@ const Menu = () => {
           <ul className="menu_btn_list">
             <li>
               <Link href="/">
-                <a className="menu_btn_link">
+                <a className="menu_btn_link" onClick={handleBtnClick}>
                   <MdOutlineLocalCafe />
                   <span>내카페</span>
                 </a>
@@ -38,7 +43,7 @@ const Menu = () => {
             </li>
             <li>
               <Link href="/">
-                <a className="menu_btn_link">
+                <a className="menu_btn_link" onClick={handleBtnClick}>
                   <HiOutlinePencil />
                   <span>글쓰기</span>
                 </a>
@@ -46,7 +51,7 @@ const Menu = () => {
             </li>
             <li>
               <Link href="/">
-                <a className="menu_btn_link">
+                <a className="menu_btn_link" onClick={handleBtnClick}>
                   <VscBellDot />
                   <span>알림설정</span>
                 </a>
@@ -54,7 +59,7 @@ const Menu = () => {
             </li>
             <li>
               <Link href="/">
-                <a className="menu_btn_link">
+                <a className="menu_btn_link" onClick={handleBtnClick}>
                   <BsChatDots />
                   <span>채팅</span>
                 </a>

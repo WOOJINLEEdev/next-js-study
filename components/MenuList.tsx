@@ -1,7 +1,6 @@
-import styled from "styled-components";
-import { IoIosArrowDown } from "react-icons/io";
-import { IoIosArrowUp } from "react-icons/io";
 import { useState } from "react";
+import styled from "styled-components";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 const MenuList = () => {
   const [listClassName, setListClassName] = useState("menu_main_list");

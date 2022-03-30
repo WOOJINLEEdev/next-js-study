@@ -14,7 +14,7 @@ interface HeaderProps {
   cafeTitle: string;
 }
 
-export const menuClickStatus = atom({
+export const menuClickStatus = atom<boolean>({
   key: "menuClickStatus",
   default: false,
 });
@@ -46,7 +46,9 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
         <a className="home_link">cafe</a>
       </Link>
 
-      <Title>{title}</Title>
+      <Link href="/" passHref>
+        <Title>{title}</Title>
+      </Link>
 
       <BtnWrapper>
         <ModeBtn type="button" onClick={handleChangeTheme}>
