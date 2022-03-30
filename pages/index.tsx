@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import styled from "styled-components";
+import { selectorFamily, useRecoilValue } from "recoil";
 import { GetServerSideProps } from "next";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { formatDate } from "utils/format-date";
+import { commentCountSelector } from "pages/posts/[id]/comments";
 
 interface HomeProps {
   postList: PostItemType[];
@@ -28,6 +30,11 @@ export interface ThemeProps {
       dimmedColor?: string;
     };
   };
+}
+
+interface CommentCount {
+  postId: number;
+  total: number;
 }
 
 const Tabs = {
@@ -57,11 +64,35 @@ const TABS = [
   },
 ];
 
+export const commentCountsSelector = selectorFamily({
+  key: "commentCountsSelector",
+  get:
+    (postIdList: number[]) =>
+    ({ get }) => {
+      return postIdList.map((postId: number) => {
+        const commentsLength = get(commentCountSelector(postId));
+
+        return {
+          postId,
+          total: commentsLength,
+        };
+      });
+    },
+});
+
 export default function Home({ postList, activeTab }: HomeProps) {
   const [cafeTitle, setCafeTitle] = useState("WOOJINLEEdev Cafe");
 
   const now = new Date();
   const yymmdd = formatDate(now, "YY.MM.DD");
+
+  const idList: number[] = postList.map((post: PostItemType) => {
+    return post.id;
+  });
+
+  const commentCounts = useRecoilValue<CommentCount[]>(
+    commentCountsSelector(idList)
+  );
 
   return (
     <Container>
@@ -136,8 +167,20 @@ export default function Home({ postList, activeTab }: HomeProps) {
               </Link>
               <div className="list_img_comment_wrapper">
                 <div className="list_img"></div>
-                <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
-                  <div className="list_comment"></div>
+                <Link
+                  href="/posts/[id]/comments"
+                  as={`/posts/${value.id}/comments`}
+                  passHref
+                >
+                  <div className="list_comment">
+                    <span>
+                      {commentCounts.map(
+                        (commentCount) =>
+                          commentCount.postId === value.id && commentCount.total
+                      )}
+                    </span>
+                    <span>댓글</span>
+                  </div>
                 </Link>
               </div>
             </ListItem>
@@ -324,12 +367,26 @@ const ListItem = styled.li`
   }
 
   & .list_comment {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
     width: 36px;
     min-height: 44px;
-    padding-top: 12px;
     border-radius: 6px;
     background-color: #f5f6f8;
+    color: #333;
     cursor: pointer;
+
+    & span {
+      font-size: 10px;
+    }
+
+    & span:first-child {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 3px;
+    }
   }
 
   & .list_img_comment_wrapper {

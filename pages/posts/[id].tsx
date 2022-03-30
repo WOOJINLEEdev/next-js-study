@@ -3,12 +3,14 @@ import Link from "next/link";
 import Head from "next/head";
 import axios from "axios";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
 import { formatDate } from "utils/format-date";
 import { HiMenu } from "react-icons/hi";
-import { IoMdHeartEmpty } from "react-icons/io";
+import { FaRegCommentDots } from "react-icons/fa";
 import { PostItemType } from "pages";
+import { commentCountSelector } from "pages/posts/[id]/comments";
 
-interface PostProps {
+export interface PostProps {
   post: PostItemType;
 }
 
@@ -16,10 +18,15 @@ const Post = ({ post }: PostProps) => {
   const router = useRouter();
   const { id } = router.query;
 
-  const now = new Date();
+  const commentsLength = useRecoilValue<number>(commentCountSelector(post.id));
 
+  const now = new Date();
   const yyyymmdd = formatDate(now, "YYYY.MM.DD");
   const hhmm = formatDate(now, "hh:mm");
+
+  const handlePrevBtn = () => {
+    router.push("/");
+  };
 
   return (
     <>
@@ -59,15 +66,23 @@ const Post = ({ post }: PostProps) => {
         </PostContent>
 
         <BtnList className="fixed_footer">
-          <a role="button" className="prev_btn" onClick={() => router.back()}>
+          <a role="button" className="prev_btn" onClick={handlePrevBtn}>
             <HiMenu />
             <span>목록으로</span>
           </a>
 
-          <button type="button" className="like_btn">
-            <IoMdHeartEmpty />
-            <span className="visually_hidden">찜</span>
-          </button>
+          <Link href="/posts/[id]/comments" as={`/posts/${post.id}/comments`}>
+            <a className="comment_btn">
+              <FaRegCommentDots />
+              {commentsLength > 0 && (
+                <span className="comment_new_icon">
+                  <span className="visually_hidden">새로운 댓글</span>
+                </span>
+              )}
+              <em>{commentsLength}</em>
+              <span className="visually_hidden">댓글</span>
+            </a>
+          </Link>
         </BtnList>
       </Container>
     </>
@@ -190,10 +205,28 @@ const BtnList = styled.div`
     }
   }
 
-  & .like_btn > svg {
-    width: 19px;
-    height: 19px;
-    margin: 14px;
-    color: ${(props) => props.theme.colors.titleColor};
+  & .comment_btn {
+    position: relative;
+    display: flex;
+    width: 50px;
+
+    & .comment_new_icon {
+      position: absolute;
+      right: 20px;
+      top: 12px;
+      width: 10px;
+      height: 10px;
+      margin: 0;
+      border-radius: 50%;
+      background: #ff0000;
+    }
+
+    & svg {
+      display: inline-block;
+      width: 19px;
+      height: 19px;
+      margin: 14px 7px 14px;
+      color: ${(props) => props.theme.colors.titleColor};
+    }
   }
 `;
