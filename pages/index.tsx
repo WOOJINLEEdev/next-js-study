@@ -296,6 +296,7 @@ const Section = styled.section`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    cursor: pointer;
   }
 
   & .info_link {

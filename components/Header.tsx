@@ -107,6 +107,7 @@ const Container = styled.header<ContainerProps>`
 
   & .home_link {
     min-width: 79px;
+    user-select: none;
   }
 `;
 
@@ -117,6 +118,8 @@ const Title = styled.h1`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  user-select: none;
+  cursor: pointer;
 `;
 
 interface ModeBtnProps {
@@ -149,6 +152,7 @@ const SearchBtn = styled.a`
 
 const MenuBtn = styled.div`
   width: 46px;
+  cursor: pointer;
 
   & svg {
     width: 19px;
