@@ -7,25 +7,44 @@ import { VscBellDot } from "react-icons/vsc";
 import { BsChatDots } from "react-icons/bs";
 import MenuList from "components/MenuList";
 import { menuClickStatus } from "components/Header";
+import { tokenSelector } from "hooks/useAuth";
 
 const Menu = () => {
   const show = useRecoilValue(menuClickStatus);
   const setShowStatus = useSetRecoilState(menuClickStatus);
+  const token = useRecoilValue<string>(tokenSelector);
 
-  function handleBtnClick() {
+  function handleClick() {
     setShowStatus(false);
   }
 
   return (
     <MenuWrap className={show ? "menu_wrap" : "menu_hidden"} show={show}>
-      <MenuHeader className="menu_header">
+      <MenuHeader className="menu_header" onClick={handleClick}>
         <div className="user_area">
-          <Link href="/login">
-            <a className="user_photo">
-              <span className="visually_hidden">사용자 사진</span>
-            </a>
-          </Link>
-          <span>로그인 해주세요.</span>
+          {token ? (
+            <>
+              <Link href="/">
+                <a className="user_photo">
+                  <span className="visually_hidden">사용자 사진</span>
+                </a>
+              </Link>
+              <Link href="/">
+                <a className="user_id">{token}</a>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/login">
+                <a className="user_photo">
+                  <span className="visually_hidden">사용자 사진</span>
+                </a>
+              </Link>
+              <Link href="/login">
+                <a>로그인 해주세요.</a>
+              </Link>
+            </>
+          )}
         </div>
 
         <nav aria-labelledby="buttonList">
@@ -35,7 +54,7 @@ const Menu = () => {
           <ul className="menu_btn_list">
             <li>
               <Link href="/">
-                <a className="menu_btn_link" onClick={handleBtnClick}>
+                <a className="menu_btn_link">
                   <MdOutlineLocalCafe />
                   <span>내카페</span>
                 </a>
@@ -43,7 +62,7 @@ const Menu = () => {
             </li>
             <li>
               <Link href="/">
-                <a className="menu_btn_link" onClick={handleBtnClick}>
+                <a className="menu_btn_link">
                   <HiOutlinePencil />
                   <span>글쓰기</span>
                 </a>
@@ -51,7 +70,7 @@ const Menu = () => {
             </li>
             <li>
               <Link href="/">
-                <a className="menu_btn_link" onClick={handleBtnClick}>
+                <a className="menu_btn_link">
                   <VscBellDot />
                   <span>알림설정</span>
                 </a>
@@ -59,7 +78,7 @@ const Menu = () => {
             </li>
             <li>
               <Link href="/">
-                <a className="menu_btn_link" onClick={handleBtnClick}>
+                <a className="menu_btn_link">
                   <BsChatDots />
                   <span>채팅</span>
                 </a>
@@ -108,6 +127,10 @@ const MenuHeader = styled.div`
     display: flex;
     min-width: 100%;
     line-height: 60px;
+
+    & .user_id {
+      width: calc(100% - 50px);
+    }
   }
 
   & .user_photo {

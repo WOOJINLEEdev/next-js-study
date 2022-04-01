@@ -5,17 +5,25 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 const MenuList = () => {
   const [listClassName, setListClassName] = useState("menu_main_list");
 
-  const handleClick = () => {
+  const handleMenuTitleClick = (e: React.MouseEvent<HTMLHeadingElement>) => {
     setListClassName("hide");
 
     listClassName === "hide" && setListClassName("menu_main_list");
   };
 
+  const handleMenuMainClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+  };
+
   return (
-    <MenuMain className="menu_main">
+    <MenuMain className="menu_main" onClick={handleMenuMainClick}>
       <nav aria-labelledby="allBoard">
         <div>
-          <h2 className="menu_main_title" id="allBoard" onClick={handleClick}>
+          <h2
+            className="menu_main_title"
+            id="allBoard"
+            onClick={handleMenuTitleClick}
+          >
             <span>전체 게시판</span>
             <button type="button">
               {listClassName === "menu_main_list" ? (
