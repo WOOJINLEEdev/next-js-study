@@ -66,7 +66,12 @@ const Post = ({ post }: PostProps) => {
         </PostContent>
 
         <BtnList className="fixed_footer">
-          <a role="button" className="prev_btn" onClick={handlePrevBtn}>
+          <a
+            role="button"
+            className="prev_btn"
+            onClick={handlePrevBtn}
+            tabIndex={0}
+          >
             <HiMenu />
             <span>목록으로</span>
           </a>
@@ -100,7 +105,13 @@ export async function getStaticPaths() {
   return { paths, fallback: false };
 }
 
-export async function getStaticProps({ params }: any) {
+interface Params {
+  params: {
+    id: string;
+  };
+}
+
+export async function getStaticProps({ params }: Params) {
   const res = await axios.get(
     `https://jsonplaceholder.typicode.com/posts/${params?.id}`
   );

@@ -135,7 +135,7 @@ export default function Home({ postList, activeTab }: HomeProps) {
                   query: tab.key && { tab: tab.key },
                 }}
               >
-                <a>{tab.name}</a>
+                <a className="tab_link">{tab.name}</a>
               </Link>
             </li>
           ))}
@@ -152,7 +152,11 @@ export default function Home({ postList, activeTab }: HomeProps) {
             <ListItem key={String(value.id)}>
               <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
                 <div className="post_info">
-                  <strong className="list_title" key={String(value.id)}>
+                  <strong
+                    className="list_title"
+                    key={String(value.id)}
+                    tabIndex={0}
+                  >
                     {value.title}
                   </strong>
 
@@ -172,7 +176,7 @@ export default function Home({ postList, activeTab }: HomeProps) {
                   as={`/posts/${value.id}/comments`}
                   passHref
                 >
-                  <div className="list_comment">
+                  <div className="list_comment" tabIndex={0}>
                     <span>
                       {commentCounts.map(
                         (commentCount) =>
@@ -437,6 +441,7 @@ const TabBox = styled.div`
       margin-left: 10px;
 
       & a {
+        padding: 13px 0;
         color: ${(props) => props.theme.colors.titleColor};
       }
     }

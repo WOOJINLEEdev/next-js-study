@@ -136,8 +136,7 @@ const GlobalStyle = createGlobalStyle`
     clip: rect(1px, 1px, 1px, 1px);
     clip-path: inset(50%);
   }
- 
- 
+
   body {
     -ms-overflow-style: none;
   }
@@ -159,7 +158,6 @@ const GlobalStyle = createGlobalStyle`
     input, button {
       background-color: transparent;
       border: none;
-      outline: none;
     }
     h1, h2, h3, h4, h5, h6{
       font-family:'Maven Pro', sans-serif;
@@ -167,6 +165,20 @@ const GlobalStyle = createGlobalStyle`
 
    a, button {
      cursor: pointer;
+   }
+
+   a:focus-visible, button:focus-visible {
+    outline: 3px solid #000;
+    border-radius: 6px;
+    box-shadow: 0 0 0 7px rgba(255,255,255, 0.9);
+   }
+  
+   a:focus:not(:focus-visible), button:focus:not(:focus-visible) { 
+     outline: 0;
+   }
+  
+   input:focus {
+     outline: 0;
    }
 `;
 

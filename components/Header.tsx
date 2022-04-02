@@ -47,7 +47,7 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
       </Link>
 
       <Link href="/" passHref>
-        <Title>{title}</Title>
+        <Title tabIndex={0}>{title}</Title>
       </Link>
 
       <BtnWrapper>
@@ -75,6 +75,7 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
           id="menu_button"
           aria-haspopup="true"
           onClick={handleMenuClick}
+          tabIndex={0}
         >
           <HiMenu />
           <span className="visually_hidden">메뉴 버튼</span>
