@@ -17,6 +17,7 @@ import {
   useRecoilValue,
 } from "recoil";
 import { formatDate } from "utils/format-date";
+import { tokenSelector } from "hooks/useAuth";
 
 const commentsState = atomFamily<string[], number>({
   key: "commentsState",
@@ -55,6 +56,7 @@ const Comments = ({ post }: PostProps) => {
     commentsState(post.id)
   );
   const commentsLength = useRecoilValue<number>(commentCountSelector(post.id));
+  const token = useRecoilValue<string>(tokenSelector);
 
   const handlePrevBtnClick = () => {
     router.back();
@@ -144,7 +146,9 @@ const Comments = ({ post }: PostProps) => {
                   <Link href="#">
                     <a className="user_link">
                       <span className="user_image"></span>
-                      <span className="user_nick">user</span>
+                      <span className="user_nick">
+                        {token ? `${token}` : "-"}
+                      </span>
                     </a>
                   </Link>
                 </div>

@@ -151,12 +151,8 @@ export default function Home({ postList, activeTab }: HomeProps) {
           return (
             <ListItem key={String(value.id)}>
               <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
-                <div className="post_info">
-                  <strong
-                    className="list_title"
-                    key={String(value.id)}
-                    tabIndex={0}
-                  >
+                <a className="post_info" tabIndex={0}>
+                  <strong className="list_title" key={String(value.id)}>
                     {value.title}
                   </strong>
 
@@ -167,7 +163,7 @@ export default function Home({ postList, activeTab }: HomeProps) {
                       조회 <span>{value.id}</span>
                     </span>
                   </div>
-                </div>
+                </a>
               </Link>
               <div className="list_img_comment_wrapper">
                 <div className="list_img"></div>
@@ -176,7 +172,7 @@ export default function Home({ postList, activeTab }: HomeProps) {
                   as={`/posts/${value.id}/comments`}
                   passHref
                 >
-                  <div className="list_comment" tabIndex={0}>
+                  <a className="list_comment" tabIndex={0}>
                     <span>
                       {commentCounts.map(
                         (commentCount) =>
@@ -184,7 +180,7 @@ export default function Home({ postList, activeTab }: HomeProps) {
                       )}
                     </span>
                     <span>댓글</span>
-                  </div>
+                  </a>
                 </Link>
               </div>
             </ListItem>
@@ -347,6 +343,7 @@ const ListItem = styled.li`
   }
 
   & .post_info {
+    width: 100%;
     cursor: pointer;
   }
 

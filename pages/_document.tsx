@@ -43,7 +43,7 @@ export default class MyDocument extends Document {
           <script
             defer
             type="text/javascript"
-            src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js"
+            src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2-nopolyfill.js"
             charSet="utf-8"
           />
           <NextScript />

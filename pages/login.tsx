@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
+import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
-import { GetStaticProps } from "next";
 import { IoIosCloseCircle } from "react-icons/io";
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
 import useAuth from "hooks/useAuth";
@@ -65,7 +64,7 @@ const Login = () => {
     setPasswordInput(e.target.value);
   };
 
-  const handleIdInputClick = () => {
+  const handleIdInputFocus = () => {
     idInputRef?.current && setIdClassName("id_focus");
   };
 
@@ -73,7 +72,7 @@ const Login = () => {
     idInputRef?.current && setIdClassName("item_area id");
   };
 
-  const handlePasswordInputClick = () => {
+  const handlePasswordInputFocus = () => {
     passwordInputRef?.current && setPasswordClassName("password_focus");
   };
 
@@ -111,92 +110,97 @@ const Login = () => {
   };
 
   return (
-    <Container>
-      <Wrapper>
-        <LoginWrap onSubmit={onSubmit} ref={formRef}>
-          <div className={idClassName}>
-            <div className="user_id_icon">
-              <AiOutlineUser />
+    <>
+      <Container>
+        <Wrapper>
+          <LoginWrap onSubmit={onSubmit} ref={formRef}>
+            <div className={idClassName}>
+              <div className="user_id_icon">
+                <AiOutlineUser />
+              </div>
+              <label htmlFor="userId" className="visually_hidden">
+                아이디
+              </label>
+              <input
+                type="text"
+                id="userId"
+                name="userId"
+                className="user_id"
+                value={idInput}
+                onChange={handleIdInput}
+                onFocus={handleIdInputFocus}
+                onBlur={handleIdInputBlur}
+                ref={idInputRef}
+                placeholder="아이디"
+                autoComplete="on"
+              />
+              {idInput.length > 0 && (
+                <RemoveBtn role="button" onClick={() => handleRemoveBtn("id")}>
+                  <IoIosCloseCircle />
+                  <span className="visually_hidden">검색 입력 삭제</span>
+                </RemoveBtn>
+              )}
             </div>
-            <label htmlFor="userId" className="visually_hidden">
-              아이디
-            </label>
-            <input
-              type="text"
-              id="userId"
-              name="userId"
-              className="user_id"
-              value={idInput}
-              onChange={handleIdInput}
-              onClick={handleIdInputClick}
-              onBlur={handleIdInputBlur}
-              ref={idInputRef}
-              placeholder="아이디"
-            />
-            {idInput.length > 0 && (
-              <RemoveBtn role="button" onClick={() => handleRemoveBtn("id")}>
-                <IoIosCloseCircle />
-                <span className="visually_hidden">검색 입력 삭제</span>
-              </RemoveBtn>
-            )}
-          </div>
 
-          <div className={passwordClassName}>
-            <div className="password_icon">
-              <AiOutlineLock />
+            <div className={passwordClassName}>
+              <div className="password_icon">
+                <AiOutlineLock />
+              </div>
+              <label htmlFor="userPassword" className="visually_hidden">
+                비밀번호
+              </label>
+              <input
+                type="password"
+                id="userPassword"
+                name="userPassword"
+                className="user_password"
+                value={passwordInput}
+                onChange={handlePasswordInput}
+                onFocus={handlePasswordInputFocus}
+                onBlur={handlePasswordInputBlur}
+                ref={passwordInputRef}
+                autoComplete="new-password"
+                maxLength={16}
+                placeholder="비밀번호"
+                onKeyPress={onKeyPress}
+              />
+              {passwordInput.length > 0 && (
+                <RemoveBtn
+                  role="button"
+                  onClick={() => handleRemoveBtn("password")}
+                >
+                  <IoIosCloseCircle />
+                  <span className="visually_hidden">검색 입력 삭제</span>
+                </RemoveBtn>
+              )}
             </div>
-            <label htmlFor="userPassword" className="visually_hidden">
-              비밀번호
-            </label>
-            <input
-              type="password"
-              id="userPassword"
-              name="userPassword"
-              className="user_password"
-              value={passwordInput}
-              onChange={handlePasswordInput}
-              onClick={handlePasswordInputClick}
-              onBlur={handlePasswordInputBlur}
-              ref={passwordInputRef}
-              autoComplete="new-password"
-              maxLength={16}
-              placeholder="비밀번호"
-              onKeyPress={onKeyPress}
-            />
-            {passwordInput.length > 0 && (
-              <RemoveBtn
-                role="button"
-                onClick={() => handleRemoveBtn("password")}
-              >
-                <IoIosCloseCircle />
-                <span className="visually_hidden">검색 입력 삭제</span>
-              </RemoveBtn>
-            )}
-          </div>
-          <button type="submit" className="login_btn">
-            로그인
-          </button>
-        </LoginWrap>
+            <button type="submit" className="login_btn">
+              로그인
+            </button>
+          </LoginWrap>
 
-        <div>
-          <NaverLoginBtn onClick={handleNaverLoginClick}>
-            <span className="visually_hidden">네이버 아이디로 로그인</span>
-          </NaverLoginBtn>
-          <div id="naverIdLogin" onClick={initializeNaverLogin} role="button" />
-        </div>
-      </Wrapper>
-    </Container>
+          <div>
+            <NaverLoginBtn onClick={handleNaverLoginClick}>
+              <span className="visually_hidden">네이버 아이디로 로그인</span>
+            </NaverLoginBtn>
+            <div
+              id="naverIdLogin"
+              onClick={initializeNaverLogin}
+              role="button"
+            />
+          </div>
+        </Wrapper>
+      </Container>
+      <Script
+        type="text/javascript"
+        src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2-nopolyfill.js"
+        strategy="beforeInteractive"
+      />
+    </>
   );
 };
 
 export default Login;
-
-export const getStaticProps: GetStaticProps = async () => {
-  const res = await axios(`https://shopping-mall-api-lab.click/v1/products`);
-  const data = res.data;
-
-  return { props: { item: data } };
-};
 
 const Container = styled.div`
   position: relative;
