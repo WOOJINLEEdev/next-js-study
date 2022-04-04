@@ -11,10 +11,12 @@ import {
 import { FaRegCommentDots } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 import {
+  atom,
   atomFamily,
   selectorFamily,
   useRecoilState,
   useRecoilValue,
+  useSetRecoilState,
 } from "recoil";
 import { formatDate } from "utils/format-date";
 import { tokenSelector } from "hooks/useAuth";
@@ -24,6 +26,17 @@ const commentsState = atomFamily<string[], number>({
   default: (postId: number) => {
     return [];
   },
+});
+
+interface MyComment {
+  postId: number;
+  comment: string;
+  postTitle: string;
+}
+
+export const myCommentsState = atom<MyComment[]>({
+  key: "myCommentsState",
+  default: [],
 });
 
 export const commentCountSelector = selectorFamily<number, number>({
@@ -55,6 +68,7 @@ const Comments = ({ post }: PostProps) => {
   const [comments, setComments] = useRecoilState<string[]>(
     commentsState(post.id)
   );
+  const setMyComments = useSetRecoilState<MyComment[]>(myCommentsState);
   const commentsLength = useRecoilValue<number>(commentCountSelector(post.id));
   const token = useRecoilValue<string>(tokenSelector);
 
@@ -74,8 +88,13 @@ const Comments = ({ post }: PostProps) => {
   const handleRegisterBtn = () => {
     if (value.trim().length === 0) return false;
 
-    value.trim().length > 0 &&
+    if (value.trim().length > 0) {
       setComments((comments: string[]) => [value, ...comments]);
+      setMyComments((myComments: MyComment[]) => [
+        { postId: post.id, comment: value, postTitle: post.title },
+        ...myComments,
+      ]);
+    }
 
     setValue("");
   };

@@ -24,12 +24,12 @@ const Menu = () => {
         <div className="user_area">
           {token ? (
             <>
-              <Link href="/">
+              <Link href="/myprofile/articles">
                 <a className="user_photo">
                   <span className="visually_hidden">사용자 사진</span>
                 </a>
               </Link>
-              <Link href="/">
+              <Link href="/myprofile/articles">
                 <a className="user_id">{token}</a>
               </Link>
             </>
