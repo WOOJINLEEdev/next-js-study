@@ -57,7 +57,8 @@ const Login = () => {
   };
 
   const handleIdInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIdInput(e.target.value);
+    const targetValue = e.target.value;
+    setIdInput(targetValue.replace(/[^a-z0-9]/gi, "").toLowerCase());
   };
 
   const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +95,18 @@ const Login = () => {
     const formData = new FormData(form);
     const userId = formData.get("userId") as string;
     const userPassword = formData.get("userPassword") as string;
+
+    if (userId === "" || userId.trim().length === 0) {
+      alert("아이디를 입력해주세요.");
+      idInputRef?.current?.focus();
+      return false;
+    }
+
+    if (userPassword === "") {
+      alert("비밀번호를 입력해주세요.");
+      passwordInputRef?.current?.focus();
+      return false;
+    }
 
     try {
       await auth.login(userId, userPassword);
