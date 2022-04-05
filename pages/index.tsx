@@ -329,13 +329,15 @@ const ListGroup = styled.ul`
 const ListItem = styled.li`
   position: relative;
   display: flex;
+  justify-content: space-between;
   width: 100%;
   min-height: 56px;
   padding: 11px 0;
-  justify-content: space-between;
   border-bottom: 0.5px solid #e6e6e6;
   word-break: break-word;
   word-wrap: break-word;
+  background-color: ${(props) => props.theme.colors.bgColor};
+  color: ${(props) => props.theme.colors.titleColor};
 
   &:last-child {
     border-bottom: 0;
