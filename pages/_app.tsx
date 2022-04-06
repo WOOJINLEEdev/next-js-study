@@ -72,6 +72,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
             />
             <meta name="author" content="WOOJINLEEdev" />
             <meta name="description" content="WOOJINLEEdev의 Cafe입니다." />
+            <meta
+              name="google-site-verification"
+              content="BxNfV6gcR0z9GxeqFHAk_bwqCphDjRxmiWugCLYDNXI"
+            />
             <link rel="icon" href="/favicon-wj.ico" />
             <title>WOOJINLEEdev Cafe</title>
           </Head>
