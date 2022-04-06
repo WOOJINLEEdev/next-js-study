@@ -5,8 +5,8 @@ import { MdOutlineLocalCafe } from "react-icons/md";
 import { HiOutlinePencil } from "react-icons/hi";
 import { VscBellDot } from "react-icons/vsc";
 import { BsChatDots } from "react-icons/bs";
-import MenuList from "components/MenuList";
-import { menuClickStatus } from "components/Header";
+import MenuList from "components/common/MenuList";
+import { menuClickStatus } from "components/common/Header";
 import { tokenSelector } from "hooks/useAuth";
 
 const Menu = () => {

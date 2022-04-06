@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-import SearchInput from "components/SearchInput";
+import SearchInput from "components/search/SearchInput";
 import { useRouter } from "next/router";
+import { ReactElement } from "react";
+import Footer from "components/common/Footer";
 
 const Search = () => {
   const router = useRouter();
@@ -34,11 +36,18 @@ const Search = () => {
 
 export default Search;
 
+Search.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <>
+      {page}
+      <Footer />
+    </>
+  );
+};
+
 const SearchBar = styled.div`
-  position: absolute;
   display: flex;
   justify-content: space-between;
-  top: 0;
   width: 100%;
   height: 51px;
   padding: 0 10px;

@@ -9,7 +9,7 @@ import {
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
 import { FaRegCommentDots } from "react-icons/fa";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, ReactElement } from "react";
 import {
   atom,
   atomFamily,
@@ -20,6 +20,7 @@ import {
 } from "recoil";
 import { formatDate } from "utils/format-date";
 import { tokenSelector } from "hooks/useAuth";
+import Footer from "components/common/Footer";
 
 const commentsState = atomFamily<string[], number>({
   key: "commentsState",
@@ -214,6 +215,15 @@ export async function getStaticProps({ params }: any) {
 
 export default Comments;
 
+Comments.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <>
+      {page}
+      <Footer />
+    </>
+  );
+};
+
 const Container = styled.div`
   position: relative;
   min-height: 100vh;
@@ -305,8 +315,6 @@ const Container = styled.div`
 `;
 
 const CommentHeader = styled.div`
-  position: fixed;
-  top: 0;
   width: 100%;
   height: 51px;
   padding: 0 10px;

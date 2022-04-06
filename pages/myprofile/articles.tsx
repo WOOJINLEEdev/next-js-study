@@ -1,7 +1,8 @@
 import Link from "next/link";
 import styled from "styled-components";
-import MyProfileLayout from "components/MyProfileLayout";
+import MyProfileLayout from "components/myprofile/MyProfileLayout";
 import { formatDate } from "utils/format-date";
+import { ReactElement } from "react";
 
 interface Data {
   postId: number;
@@ -47,6 +48,10 @@ const MyArticles = () => {
 };
 
 export default MyArticles;
+
+MyArticles.getLayout = function getLayout(page: ReactElement) {
+  return <>{page}</>;
+};
 
 const ListItem = styled.li`
   position: relative;

@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import Footer from "components/common/Footer";
 import { tokenSelector } from "hooks/useAuth";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
@@ -97,6 +98,7 @@ const MyProfileLayout = ({ children }: MyProfileLayoutProps) => {
 
         <MyBoardWrap>{children}</MyBoardWrap>
       </ProfileContent>
+      <Footer />
     </>
   );
 };
@@ -104,7 +106,7 @@ const MyProfileLayout = ({ children }: MyProfileLayoutProps) => {
 export default MyProfileLayout;
 
 const PrevBtnWrap = styled.div`
-  position: fixed;
+  position: sticky;
   top: 0;
   width: 100%;
   height: 51px;

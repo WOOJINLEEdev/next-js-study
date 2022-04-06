@@ -1,8 +1,9 @@
-import MyProfileLayout from "components/MyProfileLayout";
+import { ReactElement } from "react";
 import Link from "next/link";
-import { myCommentsState } from "pages/posts/[id]/comments";
-import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { myCommentsState } from "pages/posts/[id]/comments";
+import MyProfileLayout from "components/myprofile/MyProfileLayout";
 import { formatDate } from "utils/format-date";
 
 const MyComments = () => {
@@ -50,6 +51,10 @@ const MyComments = () => {
 };
 
 export default MyComments;
+
+MyComments.getLayout = function getLayout(page: ReactElement) {
+  return <>{page}</>;
+};
 
 const ListItem = styled.li`
   position: relative;

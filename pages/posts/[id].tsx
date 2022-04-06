@@ -4,11 +4,14 @@ import Head from "next/head";
 import axios from "axios";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
-import { formatDate } from "utils/format-date";
-import { HiMenu } from "react-icons/hi";
-import { FaRegCommentDots } from "react-icons/fa";
-import { PostItemType } from "pages";
+import { ReactElement } from "react";
+import Header from "components/common/Header";
+import Menu from "components/common/Menu";
+import { cafeTitle, PostItemType } from "pages";
 import { commentCountSelector } from "pages/posts/[id]/comments";
+import { formatDate } from "utils/format-date";
+import { FaRegCommentDots } from "react-icons/fa";
+import { HiMenu } from "react-icons/hi";
 
 export interface PostProps {
   post: PostItemType;
@@ -39,6 +42,7 @@ const Post = ({ post }: PostProps) => {
           {id}.{post.title}
         </title>
       </Head>
+
       <Container>
         <PostHeader>
           <h2 className="post_title">{post.title}</h2>
@@ -121,6 +125,16 @@ export async function getStaticProps({ params }: Params) {
 }
 
 export default Post;
+
+Post.getLayout = function getLayout(page: ReactElement) {
+  return (
+    <>
+      <Header scrollStatus={false} cafeTitle={cafeTitle} />
+      <Menu />
+      {page}
+    </>
+  );
+};
 
 const Container = styled.main`
   position: relative;

@@ -1,8 +1,8 @@
 import styled, { ThemeProvider } from "styled-components";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useTheme } from "hooks/useTheme";
-import { MenuWrapProps } from "components/Menu";
-import { menuClickStatus } from "components/Header";
+import { MenuWrapProps } from "components/common/Menu";
+import { menuClickStatus } from "components/common/Header";
 
 const CustomThemeProvider: React.FC = ({ children }) => {
   const [themeMode] = useTheme();

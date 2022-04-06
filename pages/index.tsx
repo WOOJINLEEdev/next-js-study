@@ -1,12 +1,11 @@
-import { useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import styled from "styled-components";
 import { selectorFamily, useRecoilValue } from "recoil";
 import { GetServerSideProps } from "next";
-import { AiOutlineUserAdd } from "react-icons/ai";
 import { formatDate } from "utils/format-date";
 import { commentCountSelector } from "pages/posts/[id]/comments";
+import { AiOutlineUserAdd } from "react-icons/ai";
 
 interface HomeProps {
   postList: PostItemType[];
@@ -80,9 +79,9 @@ export const commentCountsSelector = selectorFamily({
     },
 });
 
-export default function Home({ postList, activeTab }: HomeProps) {
-  const [cafeTitle, setCafeTitle] = useState("WOOJINLEEdev Cafe");
+export const cafeTitle = "WOOJINLEEdev Cafe";
 
+function Home({ postList, activeTab }: HomeProps) {
   const now = new Date();
   const yymmdd = formatDate(now, "YY.MM.DD");
 
@@ -140,10 +139,12 @@ export default function Home({ postList, activeTab }: HomeProps) {
             </li>
           ))}
         </ul>
-        <button type="button">
-          <AiOutlineUserAdd />
-          <span>가입하기</span>
-        </button>
+        <Link href="/login">
+          <a className="join_btn">
+            <AiOutlineUserAdd />
+            <span>가입하기</span>
+          </a>
+        </Link>
       </TabBox>
 
       <ListGroup>
@@ -213,6 +214,8 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     },
   };
 };
+
+export default Home;
 
 const Container = styled.main<ThemeProps>`
   width: 100%;
@@ -455,7 +458,7 @@ const TabBox = styled.div`
     }
   }
 
-  & button {
+  & .join_btn {
     display: flex;
     justify-content: center;
     width: 100px;
@@ -463,9 +466,11 @@ const TabBox = styled.div`
     line-height: 29px;
     margin: 9px 0;
     background: #ebecef;
+    color: #333;
     border-radius: 6px;
     font-size: 13px;
     font-weight: bold;
+    padding: 0;
 
     & svg {
       width: 19px;

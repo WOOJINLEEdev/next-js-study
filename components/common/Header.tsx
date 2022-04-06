@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import styled from "styled-components";
+import { atom, useRecoilState } from "recoil";
+import { useTheme } from "hooks/useTheme";
 import { HiMenu } from "react-icons/hi";
 import { GoSearch } from "react-icons/go";
 import { MdOutlineLightMode, MdDarkMode } from "react-icons/md";
-import { useTheme } from "hooks/useTheme";
 import { light } from "styles/theme";
-import { atom, useRecoilState } from "recoil";
 
 interface HeaderProps {
   scrollStatus: boolean;

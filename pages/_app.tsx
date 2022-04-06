@@ -1,15 +1,28 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { useState, useEffect, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  ReactElement,
+  ReactNode,
+} from "react";
+import { NextPage } from "next";
 import { RecoilRoot } from "recoil";
-import Header from "components/Header";
-import Footer from "components/Footer";
-import CustomThemeProvider from "components/CustomThemeProvider";
 import GlobalStyle from "styles/global-styles";
-import Menu from "components/Menu";
+import CustomThemeProvider from "components/common/CustomThemeProvider";
+import DefaultLayout from "components/common/DefaultLayout";
+import { cafeTitle } from "pages";
 
-function MyApp({ Component, pageProps }: AppProps) {
-  const [cafeTitle, setCafeTitle] = useState("WOOJINLEEdev Cafe");
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+};
+
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [scrollStatus, setScrollStatus] = useState(false);
 
   const handleScrollY = useCallback(() => {
@@ -31,6 +44,8 @@ function MyApp({ Component, pageProps }: AppProps) {
     };
   }, [handleScrollY]);
 
+  const getLayout = Component.getLayout;
+
   return (
     <>
       <GlobalStyle />
@@ -46,10 +61,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             <link rel="icon" href="/favicon-wj.ico" />
             <title>WOOJINLEEdev Cafe</title>
           </Head>
-          <Header scrollStatus={scrollStatus} cafeTitle={cafeTitle} />
-          <Menu />
-          <Component {...pageProps} />
-          <Footer />
+          {getLayout ? (
+            getLayout(<Component {...pageProps} />)
+          ) : (
+            <DefaultLayout scrollStatus={scrollStatus} cafeTitle={cafeTitle}>
+              <Component {...pageProps} />
+            </DefaultLayout>
+          )}
         </CustomThemeProvider>
       </RecoilRoot>
     </>

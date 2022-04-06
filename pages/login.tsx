@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Script from "next/script";
-import { useEffect, useRef, useState } from "react";
+import { ReactElement, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { IoIosCloseCircle } from "react-icons/io";
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
