@@ -13,6 +13,7 @@ import GlobalStyle from "styles/global-styles";
 import CustomThemeProvider from "components/common/CustomThemeProvider";
 import DefaultLayout from "components/common/DefaultLayout";
 import { cafeTitle } from "pages";
+import { useRouter } from "next/router";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -23,6 +24,7 @@ type AppPropsWithLayout = AppProps & {
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const router = useRouter();
   const [scrollStatus, setScrollStatus] = useState(false);
 
   const handleScrollY = useCallback(() => {
@@ -43,6 +45,18 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       window.removeEventListener("scroll", handleScrollY);
     };
   }, [handleScrollY]);
+
+  useEffect(() => storePathValues, [router.asPath]);
+
+  function storePathValues() {
+    const storage = globalThis?.sessionStorage;
+    if (!storage) return;
+
+    const prevPath: any = storage.getItem("currentPath");
+    storage.setItem("prevPath", prevPath);
+
+    storage.setItem("currentPath", globalThis.location.pathname);
+  }
 
   const getLayout = Component.getLayout;
 

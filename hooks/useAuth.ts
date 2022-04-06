@@ -16,7 +16,6 @@ export const isLoginSelector = selector({
   key: "auth/isLogin",
   get: ({ get }) => {
     const auth = get(authState);
-    console.log("auth ", auth);
 
     return Boolean(auth.token);
   },

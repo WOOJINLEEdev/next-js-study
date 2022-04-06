@@ -5,7 +5,8 @@ import { selectorFamily, useRecoilValue } from "recoil";
 import { GetServerSideProps } from "next";
 import { formatDate } from "utils/format-date";
 import { commentCountSelector } from "pages/posts/[id]/comments";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { AiOutlineUserAdd, AiOutlineUser } from "react-icons/ai";
+import { tokenSelector } from "hooks/useAuth";
 
 interface HomeProps {
   postList: PostItemType[];
@@ -92,6 +93,7 @@ function Home({ postList, activeTab }: HomeProps) {
   const commentCounts = useRecoilValue<CommentCount[]>(
     commentCountsSelector(idList)
   );
+  const token = useRecoilValue<string>(tokenSelector);
 
   return (
     <Container>
@@ -139,10 +141,10 @@ function Home({ postList, activeTab }: HomeProps) {
             </li>
           ))}
         </ul>
-        <Link href="/login">
+        <Link href={token ? "/myprofile/articles" : "/login"}>
           <a className="join_btn">
-            <AiOutlineUserAdd />
-            <span>가입하기</span>
+            {token ? <AiOutlineUser /> : <AiOutlineUserAdd />}
+            <span>{token ? "마이프로필" : "가입하기"}</span>
           </a>
         </Link>
       </TabBox>

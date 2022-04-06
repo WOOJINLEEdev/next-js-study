@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import Footer from "components/common/Footer";
-import { tokenSelector } from "hooks/useAuth";
+import useAuth, { isLoginSelector, tokenSelector } from "hooks/useAuth";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
 const Tabs = {
@@ -32,20 +32,36 @@ interface MyProfileLayoutProps {
 
 const MyProfileLayout = ({ children }: MyProfileLayoutProps) => {
   const router = useRouter();
+  const auth = useAuth();
   const token = useRecoilValue<string>(tokenSelector);
+  const isLogin = useRecoilValue<boolean>(isLoginSelector);
+
+  function handlePrevBtn() {
+    router.back();
+  }
+
+  function handleLogoutBtn() {
+    auth.logout(token);
+  }
 
   return (
     <>
-      <PrevBtnWrap>
-        <button
-          type="button"
-          className="prev_btn"
-          onClick={() => router.back()}
-        >
+      <BtnWrap>
+        <button type="button" className="prev_btn" onClick={handlePrevBtn}>
           <MdOutlineKeyboardArrowLeft />
           <span className="visually_hidden">이전 페이지로 돌아가기</span>
         </button>
-      </PrevBtnWrap>
+
+        {isLogin && (
+          <button
+            type="button"
+            className="logout_btn"
+            onClick={handleLogoutBtn}
+          >
+            로그아웃
+          </button>
+        )}
+      </BtnWrap>
 
       {token ? (
         <ProfileHead>
@@ -84,13 +100,12 @@ const MyProfileLayout = ({ children }: MyProfileLayoutProps) => {
                 className={router.pathname === tab.path ? "is_active" : ""}
                 value={tab.value}
               >
-                <Link
-                  href={{
-                    pathname: tab.path,
-                  }}
+                <div
+                  className="tab_link"
+                  onClick={() => router.replace(tab.path)}
                 >
-                  <a className="tab_link">{tab.name}</a>
-                </Link>
+                  {tab.name}
+                </div>
               </li>
             ))}
           </ul>
@@ -105,8 +120,10 @@ const MyProfileLayout = ({ children }: MyProfileLayoutProps) => {
 
 export default MyProfileLayout;
 
-const PrevBtnWrap = styled.div`
+const BtnWrap = styled.div`
   position: sticky;
+  display: flex;
+  justify-content: space-between;
   top: 0;
   width: 100%;
   height: 51px;
@@ -122,6 +139,13 @@ const PrevBtnWrap = styled.div`
       margin: 5px 0;
       color: ${(props) => props.theme.colors.titleColor};
     }
+  }
+
+  & .logout_btn {
+    width: 80px;
+    background: ${(props) => props.theme.colors.bgColor};
+    color: ${(props) => props.theme.colors.titleColor};
+    margin-right: 16px;
   }
 `;
 

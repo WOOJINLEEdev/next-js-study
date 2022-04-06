@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Script from "next/script";
-import { ReactElement, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { IoIosCloseCircle } from "react-icons/io";
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
@@ -126,6 +126,7 @@ const Login = () => {
     <>
       <Container>
         <Wrapper>
+          <h2>* 아이디는 영문 및 숫자만 입력 가능합니다.</h2>
           <LoginWrap onSubmit={onSubmit} ref={formRef}>
             <div className={idClassName}>
               <div className="user_id_icon">
@@ -221,6 +222,16 @@ const Container = styled.div`
   margin: 0 auto;
   background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+
+  & h2 {
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 20px;
+  }
 `;
 
 const Wrapper = styled.div`

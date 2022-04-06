@@ -328,7 +328,7 @@ const CommentHeader = styled.div`
   }
 
   & .search_btn_prev {
-    position: fixed;
+    position: absolute;
     left: 0;
     height: 51px;
 
