@@ -1,0 +1,14 @@
+User-agent: *
+Disallow: /
+
+User-agent: Googlebot
+Allow : /
+Disallow: /myprofile*/
+Crawl-delay: 60
+
+User-agent: Yeti
+Allow : /
+Disallow: /myprofile*/
+Crawl-delay: 60
+
+Sitemap: https://next-js-study-five.vercel.app/sitemap.xml
