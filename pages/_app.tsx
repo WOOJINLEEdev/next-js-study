@@ -76,6 +76,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               name="google-site-verification"
               content="BxNfV6gcR0z9GxeqFHAk_bwqCphDjRxmiWugCLYDNXI"
             />
+            <meta
+              name="naver-site-verification"
+              content="f33bea3e52e797faea146f16a95eaa110cf02d18"
+            />
             <link rel="icon" href="/favicon-wj.ico" />
             <title>WOOJINLEEdev Cafe</title>
           </Head>
