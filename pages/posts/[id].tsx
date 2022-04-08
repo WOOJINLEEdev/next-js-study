@@ -34,10 +34,9 @@ const Post = ({ post }: PostProps) => {
   return (
     <>
       <Head>
-        <meta
-          name="description"
-          content={`WOOJINLEEdev Cafe의 게시글입니다. 제목은 ${post.title} 입니다.`}
-        />
+        <meta name="description" content={`${post.body}`} />
+        <meta property="og:title" content={`${post.title}`} />
+        <meta property="og:description" content={`${post.body}`} />
         <title>
           {id}.{post.title}
         </title>

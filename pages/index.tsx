@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Head from "next/head";
 import axios from "axios";
 import styled from "styled-components";
 import { selectorFamily, useRecoilValue } from "recoil";
@@ -96,101 +97,111 @@ function Home({ postList, activeTab }: HomeProps) {
   const token = useRecoilValue<string>(tokenSelector);
 
   return (
-    <Container>
-      <Section>
-        <div className="info">
-          <Link href="/">
-            <a className="cafe_img">
-              <span className="visually_hidden">cafe 이미지</span>
-            </a>
-          </Link>
-          <div className="info_text">
-            <Link href="/" passHref>
-              <h1 className="info_title">{cafeTitle}</h1>
+    <>
+      <Head>
+        <meta property="og:title" content="WOOJINLEEdev Cafe" />
+        <meta
+          property="og:description"
+          content="WOOJINLEEdev의 Cafe입니다. Next.js를 활용하여 만든 웹사이트입니다. 모바일 기준으로 만들어졌습니다."
+        />
+      </Head>
+      <Container>
+        <Section>
+          <div className="info">
+            <Link href="/">
+              <a className="cafe_img">
+                <span className="visually_hidden">cafe 이미지</span>
+              </a>
             </Link>
-
-            <div className="info_content">
-              <span className="info_memeber">
-                멤버수 <em>1</em>
-              </span>
-              <Link href="/">
-                <a className="info_link">카페정보 &gt;</a>
+            <div className="info_text">
+              <Link href="/" passHref>
+                <h1 className="info_title">{cafeTitle}</h1>
               </Link>
-              <span className="info_popular">대표</span>
+
+              <div className="info_content">
+                <span className="info_memeber">
+                  멤버수 <em>1</em>
+                </span>
+                <Link href="/">
+                  <a className="info_link">카페정보 &gt;</a>
+                </Link>
+                <span className="info_popular">대표</span>
+              </div>
             </div>
           </div>
-        </div>
-      </Section>
+        </Section>
 
-      <TabBox>
-        <ul>
-          {TABS.map((tab) => (
-            <li
-              key={tab.key}
-              className={activeTab === tab.key ? "is_active" : ""}
-              value={tab.value}
-            >
-              <Link
-                href={{
-                  pathname: tab.path,
-                  query: tab.key && { tab: tab.key },
-                }}
+        <TabBox>
+          <ul>
+            {TABS.map((tab) => (
+              <li
+                key={tab.key}
+                className={activeTab === tab.key ? "is_active" : ""}
+                value={tab.value}
               >
-                <a className="tab_link">{tab.name}</a>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <Link href={token ? "/myprofile/articles" : "/login"}>
-          <a className="join_btn">
-            {token ? <AiOutlineUser /> : <AiOutlineUserAdd />}
-            <span>{token ? "마이프로필" : "가입하기"}</span>
-          </a>
-        </Link>
-      </TabBox>
-
-      <ListGroup>
-        {postList?.map((value: PostItemType) => {
-          return (
-            <ListItem key={String(value.id)}>
-              <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
-                <a className="post_info" tabIndex={0}>
-                  <strong className="list_title" key={String(value.id)}>
-                    {value.title}
-                  </strong>
-
-                  <div className="user_area">
-                    <span>{value.id}</span>
-                    <span>{yymmdd}</span>
-                    <span>
-                      조회 <span>{value.id}</span>
-                    </span>
-                  </div>
-                </a>
-              </Link>
-              <div className="list_img_comment_wrapper">
-                <div className="list_img"></div>
                 <Link
-                  href="/posts/[id]/comments"
-                  as={`/posts/${value.id}/comments`}
-                  passHref
+                  href={{
+                    pathname: tab.path,
+                    query: tab.key && { tab: tab.key },
+                  }}
                 >
-                  <a className="list_comment" tabIndex={0}>
-                    <span>
-                      {commentCounts.map(
-                        (commentCount) =>
-                          commentCount.postId === value.id && commentCount.total
-                      )}
-                    </span>
-                    <span>댓글</span>
+                  <a className="tab_link">{tab.name}</a>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link href={token ? "/myprofile/articles" : "/login"}>
+            <a className="join_btn">
+              {token ? <AiOutlineUser /> : <AiOutlineUserAdd />}
+              <span>{token ? "마이프로필" : "가입하기"}</span>
+            </a>
+          </Link>
+        </TabBox>
+
+        <ListGroup>
+          {postList?.map((value: PostItemType) => {
+            return (
+              <ListItem key={String(value.id)}>
+                <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
+                  <a className="post_info" tabIndex={0}>
+                    <strong className="list_title" key={String(value.id)}>
+                      {value.title}
+                    </strong>
+
+                    <div className="user_area">
+                      <span>{value.id}</span>
+                      <span>{yymmdd}</span>
+                      <span>
+                        조회 <span>{value.id}</span>
+                      </span>
+                    </div>
                   </a>
                 </Link>
-              </div>
-            </ListItem>
-          );
-        })}
-      </ListGroup>
-    </Container>
+                <div className="list_img_comment_wrapper">
+                  <div className="list_img"></div>
+                  <Link
+                    href="/posts/[id]/comments"
+                    as={`/posts/${value.id}/comments`}
+                    passHref
+                  >
+                    <a className="list_comment" tabIndex={0}>
+                      <span>
+                        {commentCounts.map(
+                          (commentCount) =>
+                            commentCount.postId === value.id &&
+                            commentCount.total
+                        )}
+                      </span>
+                      <span>댓글</span>
+                    </a>
+                  </Link>
+                </div>
+              </ListItem>
+            );
+          })}
+        </ListGroup>
+      </Container>
+    </>
   );
 }
 

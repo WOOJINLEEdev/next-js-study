@@ -16,8 +16,10 @@ const CustomThemeProvider: React.FC = ({ children }) => {
 
   return (
     <ThemeProvider theme={themeMode}>
-      <DimmedLayer show={show} onClick={handleDimmedClick} />
-      {children}
+      <>
+        <DimmedLayer show={show} onClick={handleDimmedClick} />
+        {children}
+      </>
     </ThemeProvider>
   );
 };
