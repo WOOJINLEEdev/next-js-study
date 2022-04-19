@@ -221,6 +221,7 @@ const TabBox = styled.div`
         display: block;
         width: 100%;
         color: ${(props) => props.theme.colors.titleColor};
+        cursor: pointer;
       }
     }
 

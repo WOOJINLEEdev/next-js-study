@@ -29,6 +29,8 @@ export interface ThemeProps {
       boxColor?: string;
       tabBorderColor?: string;
       dimmedColor?: string;
+      editorBgColor?: string;
+      editorTitleColor?: string;
     };
   };
 }

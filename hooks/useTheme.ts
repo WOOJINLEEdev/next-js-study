@@ -2,9 +2,9 @@ import { useCallback, useEffect } from "react";
 import { useRecoilState, atom } from "recoil";
 import { dark, light } from "styles/theme";
 
-const ISSERVER = typeof window === "undefined";
+const isServer = typeof window === "undefined";
 
-const themeStatus = atom({
+export const themeStatus = atom({
   key: "themeStatus",
   default: light,
 });
@@ -13,7 +13,7 @@ export const useTheme = () => {
   const [theme, setTheme] = useRecoilState(themeStatus);
 
   useEffect(() => {
-    if (!ISSERVER) {
+    if (!isServer) {
       const localTheme = window.localStorage.getItem("theme");
 
       setTheme(localTheme === "light" ? light : dark);

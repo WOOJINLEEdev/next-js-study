@@ -103,7 +103,7 @@ const Container = styled.header<ContainerProps>`
   background: #fff;
   background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
-  z-index: 10;
+  z-index: 99;
   border-bottom: ${(props) => (props.showDivider ? "1px solid #e6e6e6" : "0")};
 
   & .home_link {

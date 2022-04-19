@@ -61,7 +61,7 @@ const Menu = () => {
               </Link>
             </li>
             <li>
-              <Link href="/">
+              <Link href="/articles/write">
                 <a className="menu_btn_link">
                   <HiOutlinePencil />
                   <span>글쓰기</span>
