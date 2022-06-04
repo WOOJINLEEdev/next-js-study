@@ -1,60 +1,67 @@
-import { useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useRef, useState } from "react";
 import { GoSearch } from "react-icons/go";
 import { IoIosCloseCircle } from "react-icons/io";
 import styled from "styled-components";
 
-const SearchInput = () => {
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const [searchInput, setSearchInput] = useState("");
+const SearchForm = () => {
+  const [searchText, setSearchText] = useState("");
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInput(e.target.value);
-  };
-
-  const onSearchEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      console.log("search:", searchInput);
-    }
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
   };
 
   const handleRemoveBtn = () => {
-    setSearchInput("");
-    searchInputRef?.current?.focus();
+    setSearchText("");
+    searchRef?.current?.focus();
+  };
+
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (searchText.trim().length === 0) {
+      return false;
+    }
+
+    console.log("searchText:", searchText);
   };
 
   return (
-    <SearchWrap className="search_input_wrap">
+    <Form className="search_form" onSubmit={handleFormSubmit}>
       <div className="search_icon">
         <GoSearch />
       </div>
 
-      <label htmlFor="searchInputText" className="visually_hidden">
+      <label htmlFor="searchText" className="visually_hidden">
         검색 입력창
       </label>
       <input
         type="text"
         placeholder="검색어 입력"
-        id="searchInputText"
-        value={searchInput}
+        id="searchText"
+        value={searchText}
         onChange={handleChange}
-        onKeyPress={onSearchEnter}
-        ref={searchInputRef}
+        ref={searchRef}
       />
-      {searchInput.trim().length > 0 ? (
-        <RemoveBtn role="button" onClick={handleRemoveBtn}>
+
+      {searchText.trim().length > 0 ? (
+        <RemoveBtn
+          type="button"
+          onClick={handleRemoveBtn}
+          aria-label="SearchText Delete"
+        >
           <IoIosCloseCircle />
-          <span className="visually_hidden">검색 입력 삭제</span>
         </RemoveBtn>
       ) : (
         ""
       )}
-    </SearchWrap>
+    </Form>
   );
 };
 
-export default SearchInput;
+export default SearchForm;
 
-const SearchWrap = styled.div`
+const Form = styled.form`
   display: flex;
   width: calc(100% - 21px);
   background-color: rgba(0, 0, 0, 0.2);

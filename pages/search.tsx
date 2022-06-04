@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-import SearchInput from "components/search/SearchInput";
+import SearchForm from "components/search/SearchForm";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
 import Footer from "components/common/Footer";
@@ -24,7 +24,7 @@ const Search = () => {
           <span className="visually_hidden">이전 페이지로 돌아가기</span>
         </a>
 
-        <SearchInput />
+        <SearchForm />
       </SearchBar>
 
       <SearchKeyWord>
