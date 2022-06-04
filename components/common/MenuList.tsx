@@ -1,17 +1,17 @@
-import { useState } from "react";
+import { MouseEvent, useState } from "react";
 import styled from "styled-components";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 const MenuList = () => {
   const [listClassName, setListClassName] = useState("menu_main_list");
 
-  const handleMenuTitleClick = (e: React.MouseEvent<HTMLHeadingElement>) => {
+  const handleMenuTitleClick = (e: MouseEvent<HTMLHeadingElement>) => {
     setListClassName("hide");
 
     listClassName === "hide" && setListClassName("menu_main_list");
   };
 
-  const handleMenuMainClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMenuMainClick = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
   };
 

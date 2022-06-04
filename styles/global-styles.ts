@@ -103,17 +103,21 @@ const GlobalStyle = createGlobalStyle`
   section {
     display: block;
   }
+
   body {
     line-height: 1;
   }
+
   ol,
   ul {
     list-style: none;
   }
+
   blockquote,
   q {
     quotes: none;
   }
+
   blockquote:before,
   blockquote:after,
   q:before,
@@ -121,10 +125,12 @@ const GlobalStyle = createGlobalStyle`
     content: "";
     content: none;
   }
+
   table {
     border-collapse: collapse;
     border-spacing: 0;
   }
+
   .visually_hidden {
     border: 0;
     padding: 0;
@@ -141,45 +147,59 @@ const GlobalStyle = createGlobalStyle`
     -ms-overflow-style: none;
   }
 
-  ::-webkit-scrollbar {
+  body::-webkit-scrollbar {
     display: none;
   }
- 
+
   * {
-      box-sizing: border-box;
-    }
-    body{
-      font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    input, button {
-      background-color: transparent;
-      border: none;
-    }
-    h1, h2, h3, h4, h5, h6{
-      font-family:'Maven Pro', sans-serif;
-    }
+    box-sizing: border-box;
+  }
 
-   a, button {
-     cursor: pointer;
-   }
+  body {
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI",
+      Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
 
-   a:focus-visible, button:focus-visible {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  input,
+  button {
+    background-color: transparent;
+    border: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Maven Pro", sans-serif;
+  }
+
+  a,
+  button {
+    cursor: pointer;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
     outline: 3px solid #000;
     border-radius: 6px;
-    box-shadow: 0 0 0 7px rgba(255,255,255, 0.9);
-   }
-  
-   a:focus:not(:focus-visible), button:focus:not(:focus-visible) { 
-     outline: 0;
-   }
-  
-   input:focus {
-     outline: 0;
-   }
+    box-shadow: 0 0 0 7px rgba(255, 255, 255, 0.9);
+  }
+
+  a:focus:not(:focus-visible),
+  button:focus:not(:focus-visible) {
+    outline: 0;
+  }
+
+  input:focus {
+    outline: 0;
+  }
 `;
 
 export default GlobalStyle;

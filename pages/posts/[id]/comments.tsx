@@ -1,15 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
-import axios from "axios";
-import styled from "styled-components";
-import { PostItemType } from "pages";
-import { PostProps } from "pages/posts/[id]";
-import {
-  MdOutlineKeyboardArrowLeft,
-  MdOutlineKeyboardArrowRight,
-} from "react-icons/md";
-import { FaRegCommentDots } from "react-icons/fa";
-import { useState, useRef, useEffect, ReactElement } from "react";
+import { useState, useRef, useEffect, ReactElement, ChangeEvent } from "react";
 import {
   atom,
   atomFamily,
@@ -18,9 +9,19 @@ import {
   useRecoilValue,
   useSetRecoilState,
 } from "recoil";
+import axios from "axios";
+import styled from "styled-components";
+import {
+  MdOutlineKeyboardArrowLeft,
+  MdOutlineKeyboardArrowRight,
+} from "react-icons/md";
+import { FaRegCommentDots } from "react-icons/fa";
+
 import { formatDate } from "utils/format-date";
 import { tokenSelector } from "hooks/useAuth";
 import Footer from "components/common/Footer";
+import { PostItemType } from "pages";
+import { PostProps } from "pages/posts/[id]";
 
 const commentsState = atomFamily<string[], number>({
   key: "commentsState",
@@ -77,7 +78,7 @@ const Comments = ({ post }: PostProps) => {
     router.back();
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value);
   };
 

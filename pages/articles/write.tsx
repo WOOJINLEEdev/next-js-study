@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, ChangeEvent } from "react";
 import styled from "styled-components";
 
 const WysiwigEditor = dynamic(
@@ -16,7 +16,7 @@ const Write: React.FC = () => {
   }, []);
 
   const handleTitleChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (e: ChangeEvent<HTMLInputElement>) => {
       setArticleTitle(e.target.value);
     },
     [articleTitle]

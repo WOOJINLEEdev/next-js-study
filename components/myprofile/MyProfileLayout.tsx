@@ -1,10 +1,12 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { ReactNode } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+
 import Footer from "components/common/Footer";
 import useAuth, { isLoginSelector, tokenSelector } from "hooks/useAuth";
-import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
 const Tabs = {
   ARTICLES: "",
@@ -27,7 +29,7 @@ const TABS = [
 ];
 
 interface MyProfileLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const MyProfileLayout = ({ children }: MyProfileLayoutProps) => {

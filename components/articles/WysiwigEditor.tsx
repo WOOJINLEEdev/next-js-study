@@ -4,7 +4,6 @@ import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-sy
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import { Editor as EditorType, EditorProps } from "@toast-ui/react-editor";
-import { TuiEditorWithForwardedProps } from "components/articles/TuiEditorWrapper";
 import dynamic from "next/dynamic";
 import React, {
   forwardRef,
@@ -14,6 +13,8 @@ import React, {
   useRef,
 } from "react";
 import { useRecoilValue } from "recoil";
+
+import { TuiEditorWithForwardedProps } from "components/articles/TuiEditorWrapper";
 import { themeStatus } from "hooks/useTheme";
 
 interface Props extends EditorProps {
