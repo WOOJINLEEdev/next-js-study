@@ -1,24 +1,25 @@
 import { useRouter } from "next/router";
 import Script from "next/script";
-import { useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { IoIosCloseCircle } from "react-icons/io";
 import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
+
 import useAuth from "hooks/useAuth";
 
 const Login = () => {
   const { naver }: any = typeof window !== "undefined" && window;
   const router = useRouter();
-  const [naverIdToken, setNaverIdToken] = useState<string>("");
 
-  const [idInput, setIdInput] = useState<string>("");
-  const [passwordInput, setPasswordInput] = useState<string>("");
+  const [naverIdToken, setNaverIdToken] = useState<string>("");
+  const [id, setId] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [idClassName, setIdClassName] = useState<string>("item_area id");
   const [passwordClassName, setPasswordClassName] =
     useState<string>("item_area password");
 
-  const idInputRef = useRef<HTMLInputElement>(null);
-  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const idRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
   const auth = useAuth();
@@ -33,7 +34,7 @@ const Login = () => {
       clientId: process.env.NEXT_PUBLIC_NAVER_CLIENT_ID,
       callbackUrl: process.env.NEXT_PUBLIC_NAVER_CALLBACK_URL,
       isPopup: false,
-      loginButton: { color: "green", type: 3, height: 60 },
+      loginButton: { color: "#008000", type: 3, height: 60 },
       callbackHandle: true,
     });
     naverLogin.init();
@@ -52,36 +53,36 @@ const Login = () => {
   };
 
   const handleRemoveBtn = (value: string) => {
-    value === "id" && setIdInput("");
-    value === "password" && setPasswordInput("");
+    value === "id" && setId("");
+    value === "password" && setPassword("");
   };
 
-  const handleIdInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const targetValue = e.target.value;
-    setIdInput(targetValue.replace(/[^a-z0-9]/gi, "").toLowerCase());
+  const handleIdChnage = (e: ChangeEvent<HTMLInputElement>) => {
+    const targetValue = e.currentTarget.value;
+    setId(targetValue);
   };
 
-  const handlePasswordInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPasswordInput(e.target.value);
+  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.currentTarget.value);
   };
 
-  const handleIdInputFocus = () => {
-    idInputRef?.current && setIdClassName("id_focus");
+  const handleIdFocus = () => {
+    idRef?.current && setIdClassName("id_focus");
   };
 
-  const handleIdInputBlur = () => {
-    idInputRef?.current && setIdClassName("item_area id");
+  const handleIdBlur = () => {
+    idRef?.current && setIdClassName("item_area id");
   };
 
-  const handlePasswordInputFocus = () => {
-    passwordInputRef?.current && setPasswordClassName("password_focus");
+  const handlePasswordFocus = () => {
+    passwordRef?.current && setPasswordClassName("password_focus");
   };
 
-  const handlePasswordInputBlur = () => {
-    passwordInputRef?.current && setPasswordClassName("item_area password");
+  const handlePasswordBlur = () => {
+    passwordRef?.current && setPasswordClassName("item_area password");
   };
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     login(e.currentTarget);
@@ -98,13 +99,13 @@ const Login = () => {
 
     if (userId === "" || userId.trim().length === 0) {
       alert("아이디를 입력해주세요.");
-      idInputRef?.current?.focus();
+      idRef?.current?.focus();
       return false;
     }
 
     if (userPassword === "") {
       alert("비밀번호를 입력해주세요.");
-      passwordInputRef?.current?.focus();
+      passwordRef?.current?.focus();
       return false;
     }
 
@@ -116,18 +117,12 @@ const Login = () => {
     }
   }
 
-  const onKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      login(formRef?.current);
-    }
-  };
-
   return (
     <>
       <Container>
         <Wrapper>
           <h2>* 아이디는 영문 및 숫자만 입력 가능합니다.</h2>
-          <LoginWrap onSubmit={onSubmit} ref={formRef}>
+          <LoginForm onSubmit={handleFormSubmit} ref={formRef}>
             <div className={idClassName}>
               <div className="user_id_icon">
                 <AiOutlineUser />
@@ -140,18 +135,21 @@ const Login = () => {
                 id="userId"
                 name="userId"
                 className="user_id"
-                value={idInput}
-                onChange={handleIdInput}
-                onFocus={handleIdInputFocus}
-                onBlur={handleIdInputBlur}
-                ref={idInputRef}
+                value={id}
+                onChange={handleIdChnage}
+                onFocus={handleIdFocus}
+                onBlur={handleIdBlur}
+                ref={idRef}
                 placeholder="아이디"
                 autoComplete="on"
               />
-              {idInput.length > 0 && (
-                <RemoveBtn role="button" onClick={() => handleRemoveBtn("id")}>
+              {id.length > 0 && (
+                <RemoveBtn
+                  type="button"
+                  onClick={() => handleRemoveBtn("id")}
+                  aria-label="Id Delete"
+                >
                   <IoIosCloseCircle />
-                  <span className="visually_hidden">검색 입력 삭제</span>
                 </RemoveBtn>
               )}
             </div>
@@ -168,30 +166,29 @@ const Login = () => {
                 id="userPassword"
                 name="userPassword"
                 className="user_password"
-                value={passwordInput}
-                onChange={handlePasswordInput}
-                onFocus={handlePasswordInputFocus}
-                onBlur={handlePasswordInputBlur}
-                ref={passwordInputRef}
+                value={password}
+                onChange={handlePasswordChange}
+                onFocus={handlePasswordFocus}
+                onBlur={handlePasswordBlur}
+                ref={passwordRef}
                 autoComplete="new-password"
                 maxLength={16}
                 placeholder="비밀번호"
-                onKeyPress={onKeyPress}
               />
-              {passwordInput.length > 0 && (
+              {password.length > 0 && (
                 <RemoveBtn
-                  role="button"
+                  type="button"
                   onClick={() => handleRemoveBtn("password")}
+                  aria-label="Password Delete"
                 >
                   <IoIosCloseCircle />
-                  <span className="visually_hidden">검색 입력 삭제</span>
                 </RemoveBtn>
               )}
             </div>
             <button type="submit" className="login_btn">
               로그인
             </button>
-          </LoginWrap>
+          </LoginForm>
 
           <div>
             <NaverLoginBtn onClick={handleNaverLoginClick}>
@@ -246,7 +243,7 @@ const Wrapper = styled.div`
   }
 `;
 
-const LoginWrap = styled.form`
+const LoginForm = styled.form`
   position: relative;
   padding: 20px 0;
   background-color: ${(props) => props.theme.colors.bgColor};
