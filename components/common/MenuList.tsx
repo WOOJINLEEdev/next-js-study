@@ -5,7 +5,7 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 const MenuList = () => {
   const [listClassName, setListClassName] = useState("menu_main_list");
 
-  const handleMenuTitleClick = (e: MouseEvent<HTMLHeadingElement>) => {
+  const handleMenuTitleClick = () => {
     setListClassName("hide");
 
     listClassName === "hide" && setListClassName("menu_main_list");
@@ -25,17 +25,16 @@ const MenuList = () => {
             onClick={handleMenuTitleClick}
           >
             <span>전체 게시판</span>
-            <button type="button">
+            <button
+              type="button"
+              aria-label={
+                listClassName === "menu_main_list" ? "접기" : "펼치기"
+              }
+            >
               {listClassName === "menu_main_list" ? (
-                <>
-                  <IoIosArrowUp />
-                  <span className="visually_hidden">펼치기</span>
-                </>
+                <IoIosArrowUp />
               ) : (
-                <>
-                  <IoIosArrowDown />
-                  <span className="visually_hidden">펼치기</span>
-                </>
+                <IoIosArrowDown />
               )}
             </button>
           </h2>
@@ -66,6 +65,7 @@ const MenuMain = styled.div`
     display: flex;
     justify-content: space-between;
     padding-bottom: 20px;
+    cursor: pointer;
 
     & svg {
       color: ${(props) => props.theme.colors.titleColor};

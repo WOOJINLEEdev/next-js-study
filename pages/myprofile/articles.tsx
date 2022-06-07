@@ -1,16 +1,17 @@
 import Link from "next/link";
-import styled from "styled-components";
-import MyProfileLayout from "components/myprofile/MyProfileLayout";
-import { formatDate } from "utils/format-date";
 import { ReactElement } from "react";
+import styled from "styled-components";
 
-interface Data {
+import { formatDate } from "utils/format-date";
+import MyProfileLayout from "components/myprofile/MyProfileLayout";
+
+interface IData {
   postId: number;
   postTitle: string;
 }
 
 const MyArticles = () => {
-  const datas: Data[] = [];
+  const datas: IData[] = [];
   const now = new Date();
   const yyyymmdd = formatDate(now, "YYYY.MM.DD");
   const hhmm = formatDate(now, "hh:mm");
@@ -22,7 +23,7 @@ const MyArticles = () => {
       </div>
       <ul>
         {datas.length > 0 ? (
-          datas.map((data: Data, i: number) => (
+          datas.map((data: IData, i: number) => (
             <ListItem key={String(i)}>
               <div className="post_info" tabIndex={0}>
                 <Link href="/posts/[id]" as={`/posts/${data.postId}`} passHref>

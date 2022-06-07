@@ -5,7 +5,7 @@ import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
 import { Editor as EditorType, EditorProps } from "@toast-ui/react-editor";
 import dynamic from "next/dynamic";
-import React, {
+import {
   forwardRef,
   MutableRefObject,
   useCallback,
@@ -14,33 +14,33 @@ import React, {
 } from "react";
 import { useRecoilValue } from "recoil";
 
-import { TuiEditorWithForwardedProps } from "components/articles/TuiEditorWrapper";
+import { ITuiEditorWithForwardedProps } from "components/articles/TuiEditorWrapper";
 import { themeStatus } from "hooks/useTheme";
 
-interface Props extends EditorProps {
+interface IProps extends EditorProps {
   onChange: (value: string) => void;
   valueType?: "markdown" | "html";
 }
 
-interface EditorPropsWithHandlers extends EditorProps {
+interface IEditorPropsWithHandlers extends EditorProps {
   onChange?: (value: string) => void;
 }
 
-const Editor = dynamic<TuiEditorWithForwardedProps>(
+const Editor = dynamic<ITuiEditorWithForwardedProps>(
   () => import("components/articles/TuiEditorWrapper"),
-  { ssr: false }
+  { ssr: false },
 );
 
 const EditorWithForwardedRef = forwardRef<
   EditorType | undefined,
-  EditorPropsWithHandlers
+  IEditorPropsWithHandlers
 >((props, ref) => (
   <Editor {...props} forwadedRef={ref as MutableRefObject<EditorType>} />
 ));
 
 EditorWithForwardedRef.displayName = "EditorWithForwardedRef";
 
-const WysiwigEditor: React.FC<Props> = (props) => {
+const WysiwigEditor = (props: IProps) => {
   const editorRef = useRef<EditorType>();
   const themeState = useRecoilValue(themeStatus);
   const isServer = typeof window === "undefined";
@@ -48,7 +48,7 @@ const WysiwigEditor: React.FC<Props> = (props) => {
 
   useEffect(() => {
     console.log("theme", theme);
-  }, [themeState]);
+  }, [theme, themeState]);
 
   const handleChange = useCallback(() => {
     if (!editorRef.current) {
@@ -59,7 +59,7 @@ const WysiwigEditor: React.FC<Props> = (props) => {
     const valueType = props.valueType || "markdown";
 
     props.onChange(
-      valueType === "markdown" ? instance.getMarkdown() : instance.getHTML()
+      valueType === "markdown" ? instance.getMarkdown() : instance.getHTML(),
     );
   }, [props, editorRef]);
 

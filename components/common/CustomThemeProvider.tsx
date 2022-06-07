@@ -1,11 +1,12 @@
 import styled, { ThemeProvider } from "styled-components";
 import { useRecoilValue, useSetRecoilState } from "recoil";
+
 import { useTheme } from "hooks/useTheme";
-import { MenuWrapProps } from "components/common/Menu";
+import { IMenuWrap } from "components/common/Menu";
 import { menuClickStatus } from "components/common/Header";
 
 const CustomThemeProvider: React.FC = ({ children }) => {
-  const [themeMode] = useTheme();
+  const themeMode = useTheme();
 
   const show = useRecoilValue(menuClickStatus);
   const setMenuStatus = useSetRecoilState(menuClickStatus);
@@ -26,7 +27,7 @@ const CustomThemeProvider: React.FC = ({ children }) => {
 
 export default CustomThemeProvider;
 
-const DimmedLayer = styled.div<MenuWrapProps>`
+const DimmedLayer = styled.div<IMenuWrap>`
   position: fixed;
   display: ${(props) => (props.show === true ? "flex" : "none")};
   width: 100%;

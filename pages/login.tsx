@@ -20,7 +20,6 @@ const Login = () => {
 
   const idRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
 
   const auth = useAuth();
 
@@ -47,12 +46,12 @@ const Login = () => {
 
   const handleNaverLoginClick = () => {
     const naverLoginButton = document.getElementById(
-      "naverIdLogin_loginButton"
+      "naverIdLogin_loginButton",
     );
     if (naverLoginButton) naverLoginButton.click();
   };
 
-  const handleRemoveBtn = (value: string) => {
+  const handleRemoveBtnClick = (value: string) => {
     value === "id" && setId("");
     value === "password" && setPassword("");
   };
@@ -122,7 +121,7 @@ const Login = () => {
       <Container>
         <Wrapper>
           <h2>* 아이디는 영문 및 숫자만 입력 가능합니다.</h2>
-          <LoginForm onSubmit={handleFormSubmit} ref={formRef}>
+          <Form onSubmit={handleFormSubmit}>
             <div className={idClassName}>
               <div className="user_id_icon">
                 <AiOutlineUser />
@@ -146,7 +145,7 @@ const Login = () => {
               {id.length > 0 && (
                 <RemoveBtn
                   type="button"
-                  onClick={() => handleRemoveBtn("id")}
+                  onClick={() => handleRemoveBtnClick("id")}
                   aria-label="Id Delete"
                 >
                   <IoIosCloseCircle />
@@ -178,7 +177,7 @@ const Login = () => {
               {password.length > 0 && (
                 <RemoveBtn
                   type="button"
-                  onClick={() => handleRemoveBtn("password")}
+                  onClick={() => handleRemoveBtnClick("password")}
                   aria-label="Password Delete"
                 >
                   <IoIosCloseCircle />
@@ -188,12 +187,13 @@ const Login = () => {
             <button type="submit" className="login_btn">
               로그인
             </button>
-          </LoginForm>
+          </Form>
 
           <div>
-            <NaverLoginBtn onClick={handleNaverLoginClick}>
-              <span className="visually_hidden">네이버 아이디로 로그인</span>
-            </NaverLoginBtn>
+            <NaverLoginBtn
+              onClick={handleNaverLoginClick}
+              aria-label="네이버 아이디로 로그인"
+            />
             <div
               id="naverIdLogin"
               onClick={initializeNaverLogin}
@@ -202,6 +202,7 @@ const Login = () => {
           </div>
         </Wrapper>
       </Container>
+
       <Script
         type="text/javascript"
         src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2-nopolyfill.js"
@@ -241,9 +242,25 @@ const Wrapper = styled.div`
   & #naverIdLogin {
     display: none;
   }
+
+  & .join_btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px 0 13px;
+    margin-top: 14px;
+    border: ${(props) => props.theme.colors.borderColor};
+    border-radius: 6px;
+    background-color: ${(props) => props.theme.colors.bgColor};
+    color: ${(props) => props.theme.colors.titleColor};
+    font-size: 18px;
+    font-weight: 700;
+    user-select: none;
+  }
 `;
 
-const LoginForm = styled.form`
+const Form = styled.form`
   position: relative;
   padding: 20px 0;
   background-color: ${(props) => props.theme.colors.bgColor};
@@ -354,4 +371,15 @@ const RemoveBtn = styled.button`
     width: 20px;
     height: 20px;
   }
+`;
+
+const SignUpWrapper = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  border-radius: 5px;
 `;

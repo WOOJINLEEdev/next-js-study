@@ -5,8 +5,8 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
-import Footer from "components/common/Footer";
 import useAuth, { isLoginSelector, tokenSelector } from "hooks/useAuth";
+import Footer from "components/common/Footer";
 
 const Tabs = {
   ARTICLES: "",
@@ -28,37 +28,41 @@ const TABS = [
   },
 ];
 
-interface MyProfileLayoutProps {
+interface IMyProfileLayoutProps {
   children: ReactNode;
 }
 
-const MyProfileLayout = ({ children }: MyProfileLayoutProps) => {
+const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
   const router = useRouter();
   const auth = useAuth();
   const token = useRecoilValue<string>(tokenSelector);
   const isLogin = useRecoilValue<boolean>(isLoginSelector);
 
-  function handlePrevBtn() {
+  function handlePrevBtnClick() {
     router.back();
   }
 
-  function handleLogoutBtn() {
+  function handleLogoutBtnClick() {
     auth.logout(token);
   }
 
   return (
     <>
       <BtnWrap>
-        <button type="button" className="prev_btn" onClick={handlePrevBtn}>
+        <button
+          type="button"
+          className="prev_btn"
+          onClick={handlePrevBtnClick}
+          aria-label="이전 페이지로 돌아가기"
+        >
           <MdOutlineKeyboardArrowLeft />
-          <span className="visually_hidden">이전 페이지로 돌아가기</span>
         </button>
 
         {isLogin && (
           <button
             type="button"
             className="logout_btn"
-            onClick={handleLogoutBtn}
+            onClick={handleLogoutBtnClick}
           >
             로그아웃
           </button>
@@ -155,8 +159,8 @@ const ProfileHead = styled.div`
   display: flex;
   width: 100%;
   padding: 16px;
-  background: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
   border-bottom: 10px solid #e6e6e6;
 
   & .user_text {

@@ -1,23 +1,25 @@
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
+import { ReactElement } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
-import { ReactElement } from "react";
-import Header from "components/common/Header";
-import Menu from "components/common/Menu";
-import { cafeTitle, PostItemType } from "pages";
-import { commentCountSelector } from "pages/posts/[id]/comments";
-import { formatDate } from "utils/format-date";
 import { FaRegCommentDots } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 
-export interface PostProps {
-  post: PostItemType;
+import { formatDate } from "utils/format-date";
+import { cafeTitle, IPostItem } from "pages";
+import { commentCountSelector } from "pages/posts/[id]/comments";
+import Header from "components/common/Header";
+import Menu from "components/common/Menu";
+
+export interface IPostProps {
+  post: IPostItem;
 }
 
-const Post = ({ post }: PostProps) => {
+const Post = ({ post }: IPostProps) => {
   const router = useRouter();
   const { id } = router.query;
 
@@ -101,22 +103,16 @@ export async function getStaticPaths() {
   const res = await axios.get("https://jsonplaceholder.typicode.com/posts");
   const data = res.data;
 
-  const paths = data.map((item: PostItemType) => ({
+  const paths = data.map((item: IPostItem) => ({
     params: { id: String(item.id) },
   }));
 
   return { paths, fallback: false };
 }
 
-interface Params {
-  params: {
-    id: string;
-  };
-}
-
-export async function getStaticProps({ params }: Params) {
+export async function getStaticProps({ params }: GetStaticPropsContext) {
   const res = await axios.get(
-    `https://jsonplaceholder.typicode.com/posts/${params?.id}`
+    `https://jsonplaceholder.typicode.com/posts/${params?.id}`,
   );
   const data = res.data;
 
@@ -138,8 +134,8 @@ Post.getLayout = function getLayout(page: ReactElement) {
 const Container = styled.main`
   position: relative;
   height: calc(100vh - 51px);
-  background: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
 `;
 
 const PostHeader = styled.div`

@@ -1,5 +1,6 @@
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { useRecoilState, atom } from "recoil";
+
 import { dark, light } from "styles/theme";
 
 const isServer = typeof window === "undefined";
@@ -18,14 +19,7 @@ export const useTheme = () => {
 
       setTheme(localTheme === "light" ? light : dark);
     }
-  }, []);
+  }, [setTheme]);
 
-  const handleChangeTheme = useCallback(() => {
-    const mode = theme === light ? "dark" : "light";
-    window.localStorage.setItem("theme", mode);
-
-    return setTheme(mode === "light" ? light : dark);
-  }, [theme]);
-
-  return [theme, handleChangeTheme];
+  return theme;
 };

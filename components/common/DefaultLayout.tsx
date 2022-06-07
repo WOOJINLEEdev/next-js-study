@@ -1,9 +1,10 @@
 import { ReactElement } from "react";
+
 import Footer from "components/common/Footer";
 import Header from "components/common/Header";
 import Menu from "components/common/Menu";
 
-export interface DefaultLayoutProps {
+export interface IDefaultLayoutProps {
   children: ReactElement;
   scrollStatus: boolean;
   cafeTitle: string;
@@ -13,7 +14,7 @@ const DefaultLayout = ({
   children,
   scrollStatus,
   cafeTitle,
-}: DefaultLayoutProps) => {
+}: IDefaultLayoutProps) => {
   return (
     <>
       <Header scrollStatus={scrollStatus} cafeTitle={cafeTitle} />

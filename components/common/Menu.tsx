@@ -1,25 +1,32 @@
 import Link from "next/link";
 import styled from "styled-components";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { MdOutlineLocalCafe } from "react-icons/md";
 import { HiOutlinePencil } from "react-icons/hi";
 import { VscBellDot } from "react-icons/vsc";
 import { BsChatDots } from "react-icons/bs";
+
+import { tokenSelector } from "hooks/useAuth";
 import MenuList from "components/common/MenuList";
 import { menuClickStatus } from "components/common/Header";
-import { tokenSelector } from "hooks/useAuth";
+
+export interface IMenuWrap {
+  show: boolean;
+}
 
 const Menu = () => {
-  const show = useRecoilValue(menuClickStatus);
-  const setShowStatus = useSetRecoilState(menuClickStatus);
-  const token = useRecoilValue<string>(tokenSelector);
+  const [showStatus, setShowStatus] = useRecoilState(menuClickStatus);
+  const token = useRecoilValue(tokenSelector);
 
   function handleClick() {
     setShowStatus(false);
   }
 
   return (
-    <MenuWrap className={show ? "menu_wrap" : "menu_hidden"} show={show}>
+    <MenuWrap
+      className={showStatus ? "menu_wrap" : "menu_hidden"}
+      show={showStatus}
+    >
       <MenuHeader className="menu_header" onClick={handleClick}>
         <div className="user_area">
           {token ? (
@@ -95,11 +102,7 @@ const Menu = () => {
 
 export default Menu;
 
-export interface MenuWrapProps {
-  show: boolean;
-}
-
-const MenuWrap = styled.aside<MenuWrapProps>`
+const MenuWrap = styled.aside<IMenuWrap>`
   position: fixed;
   display: ${(props) => props.show && "flex"};
   flex-direction: column;

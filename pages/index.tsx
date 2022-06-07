@@ -1,41 +1,28 @@
+import { GetServerSideProps } from "next";
 import Link from "next/link";
 import Head from "next/head";
 import axios from "axios";
 import styled from "styled-components";
 import { selectorFamily, useRecoilValue } from "recoil";
-import { GetServerSideProps } from "next";
+import { AiOutlineUserAdd, AiOutlineUser } from "react-icons/ai";
+
+import { tokenSelector } from "hooks/useAuth";
 import { formatDate } from "utils/format-date";
 import { commentCountSelector } from "pages/posts/[id]/comments";
-import { AiOutlineUserAdd, AiOutlineUser } from "react-icons/ai";
-import { tokenSelector } from "hooks/useAuth";
 
-interface HomeProps {
-  postList: PostItemType[];
+interface IHomeProps {
+  postList: IPostItem[];
   activeTab: string;
 }
 
-export interface PostItemType {
+export interface IPostItem {
   id: number;
   userId: number;
   title: string;
   body: string;
 }
 
-export interface ThemeProps {
-  theme?: {
-    colors?: {
-      titleColor?: string;
-      bgColor?: string;
-      boxColor?: string;
-      tabBorderColor?: string;
-      dimmedColor?: string;
-      editorBgColor?: string;
-      editorTitleColor?: string;
-    };
-  };
-}
-
-interface CommentCount {
+interface ICommentCount {
   postId: number;
   total: number;
 }
@@ -85,16 +72,16 @@ export const commentCountsSelector = selectorFamily({
 
 export const cafeTitle = "WOOJINLEEdev Cafe";
 
-function Home({ postList, activeTab }: HomeProps) {
+function Home({ postList, activeTab }: IHomeProps) {
   const now = new Date();
   const yymmdd = formatDate(now, "YY.MM.DD");
 
-  const idList: number[] = postList.map((post: PostItemType) => {
+  const idList: number[] = postList.map((post: IPostItem) => {
     return post.id;
   });
 
-  const commentCounts = useRecoilValue<CommentCount[]>(
-    commentCountsSelector(idList)
+  const commentCounts = useRecoilValue<ICommentCount[]>(
+    commentCountsSelector(idList),
   );
   const token = useRecoilValue<string>(tokenSelector);
 
@@ -161,7 +148,7 @@ function Home({ postList, activeTab }: HomeProps) {
         </TabBox>
 
         <ListGroup>
-          {postList?.map((value: PostItemType) => {
+          {postList?.map((value: IPostItem) => {
             return (
               <ListItem key={String(value.id)}>
                 <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
@@ -191,7 +178,7 @@ function Home({ postList, activeTab }: HomeProps) {
                         {commentCounts.map(
                           (commentCount) =>
                             commentCount.postId === value.id &&
-                            commentCount.total
+                            commentCount.total,
                         )}
                       </span>
                       <span>댓글</span>
@@ -232,10 +219,10 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
 export default Home;
 
-const Container = styled.main<ThemeProps>`
+const Container = styled.main`
   width: 100%;
-  background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+  background-color: ${(props) => props.theme.colors.bgColor};
 `;
 
 const Section = styled.section`

@@ -1,17 +1,17 @@
 import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import styled from "styled-components";
 import { GoSearch } from "react-icons/go";
 import { IoIosCloseCircle } from "react-icons/io";
-import styled from "styled-components";
 
 const SearchForm = () => {
   const [searchText, setSearchText] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.target.value);
+  const handleSearchTextChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.currentTarget.value);
   };
 
-  const handleRemoveBtn = () => {
+  const handleRemoveBtnClick = () => {
     setSearchText("");
     searchRef?.current?.focus();
   };
@@ -40,15 +40,15 @@ const SearchForm = () => {
         placeholder="검색어 입력"
         id="searchText"
         value={searchText}
-        onChange={handleChange}
+        onChange={handleSearchTextChange}
         ref={searchRef}
       />
 
       {searchText.trim().length > 0 ? (
         <RemoveBtn
           type="button"
-          onClick={handleRemoveBtn}
-          aria-label="SearchText Delete"
+          onClick={handleRemoveBtnClick}
+          aria-label="검색어 삭제"
         >
           <IoIosCloseCircle />
         </RemoveBtn>

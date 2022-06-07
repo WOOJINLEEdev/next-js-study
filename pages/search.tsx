@@ -1,8 +1,9 @@
-import styled from "styled-components";
-import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-import SearchForm from "components/search/SearchForm";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
+import styled from "styled-components";
+import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
+
+import SearchForm from "components/search/SearchForm";
 import Footer from "components/common/Footer";
 
 const Search = () => {

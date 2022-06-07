@@ -2,16 +2,21 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import styled from "styled-components";
-import { atom, useRecoilState } from "recoil";
-import { useTheme } from "hooks/useTheme";
+import { atom, useRecoilState, useSetRecoilState } from "recoil";
 import { HiMenu } from "react-icons/hi";
 import { GoSearch } from "react-icons/go";
-import { MdOutlineLightMode, MdDarkMode } from "react-icons/md";
-import { light } from "styles/theme";
 
-interface HeaderProps {
+import { themeStatus, useTheme } from "hooks/useTheme";
+import { MdOutlineLightMode, MdDarkMode } from "react-icons/md";
+import { dark, light } from "styles/theme";
+
+interface IHeaderProps {
   scrollStatus: boolean;
   cafeTitle: string;
+}
+
+interface IContainer {
+  showDivider: boolean;
 }
 
 export const menuClickStatus = atom<boolean>({
@@ -19,11 +24,16 @@ export const menuClickStatus = atom<boolean>({
   default: false,
 });
 
-const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
+const Header = ({ scrollStatus, cafeTitle }: IHeaderProps) => {
   const router = useRouter();
+
   const [title, setTitle] = useState("");
   const [showDivider, setShowDivider] = useState(false);
-  const [menuStatus, setMenuStatus] = useRecoilState(menuClickStatus);
+
+  const setMenuStatus = useSetRecoilState(menuClickStatus);
+  const [theme, setTheme] = useRecoilState(themeStatus);
+
+  const themeMode = useTheme();
 
   useEffect(() => {
     scrollStatus && setTitle(cafeTitle);
@@ -32,12 +42,17 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
 
     router.pathname !== "/" && setTitle(cafeTitle);
     router.pathname !== "/" ? setShowDivider(true) : setShowDivider(false);
-  }, [scrollStatus, router.pathname]);
-
-  const [themeMode, handleChangeTheme] = useTheme();
+  }, [scrollStatus, router.pathname, cafeTitle]);
 
   const handleMenuClick = () => {
     setMenuStatus(true);
+  };
+
+  const handleModeBtnClick = () => {
+    const mode = theme === light ? "dark" : "light";
+    window.localStorage.setItem("theme", mode);
+
+    return setTheme(mode === "light" ? light : dark);
   };
 
   return (
@@ -51,18 +66,12 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
       </Link>
 
       <BtnWrapper>
-        <ModeBtn type="button" onClick={handleChangeTheme}>
-          {themeMode === light ? (
-            <>
-              <MdOutlineLightMode />
-              <span className="visually_hidden">라이트 모드</span>
-            </>
-          ) : (
-            <>
-              <MdDarkMode />
-              <span className="visually_hidden">다크 모드</span>
-            </>
-          )}
+        <ModeBtn
+          type="button"
+          onClick={handleModeBtnClick}
+          aria-label={themeMode === light ? "라이트 모드" : "다크 모드"}
+        >
+          {themeMode === light ? <MdOutlineLightMode /> : <MdDarkMode />}
         </ModeBtn>
         <Link href="/search" passHref>
           <SearchBtn role="button">
@@ -87,11 +96,7 @@ const Header = ({ scrollStatus, cafeTitle }: HeaderProps) => {
 
 export default Header;
 
-interface ContainerProps {
-  showDivider: boolean;
-}
-
-const Container = styled.header<ContainerProps>`
+const Container = styled.header<IContainer>`
   position: sticky;
   display: flex;
   justify-content: space-between;
@@ -100,7 +105,6 @@ const Container = styled.header<ContainerProps>`
   top: 0;
   text-align: center;
   line-height: 51px;
-  background: #fff;
   background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
   z-index: 99;
@@ -123,11 +127,7 @@ const Title = styled.h1`
   cursor: pointer;
 `;
 
-interface ModeBtnProps {
-  onClick?: any;
-}
-
-const ModeBtn = styled.button<ModeBtnProps>`
+const ModeBtn = styled.button`
   min-width: 75.06px;
   height: 100%;
   color: ${(props) => props.theme.colors.titleColor};

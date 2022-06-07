@@ -1,5 +1,7 @@
 import type { AppProps } from "next/app";
+import { NextPage } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import {
   useState,
   useEffect,
@@ -7,13 +9,12 @@ import {
   ReactElement,
   ReactNode,
 } from "react";
-import { NextPage } from "next";
 import { RecoilRoot } from "recoil";
+
 import GlobalStyle from "styles/global-styles";
+import { cafeTitle } from "pages";
 import CustomThemeProvider from "components/common/CustomThemeProvider";
 import DefaultLayout from "components/common/DefaultLayout";
-import { cafeTitle } from "pages";
-import { useRouter } from "next/router";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -28,12 +29,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const [scrollStatus, setScrollStatus] = useState(false);
 
   const handleScrollY = useCallback(() => {
-    const pageYOffset = window.pageYOffset;
-    if (!scrollStatus && pageYOffset > 199) {
+    const scrollY = window.scrollY;
+    if (!scrollStatus && scrollY > 199) {
       setScrollStatus(true);
     }
 
-    if (scrollStatus && pageYOffset <= 199) {
+    if (scrollStatus && scrollY <= 199) {
       setScrollStatus(false);
     }
   }, [scrollStatus]);
@@ -52,7 +53,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const storage = globalThis?.sessionStorage;
     if (!storage) return;
 
-    const prevPath: any = storage.getItem("currentPath");
+    const prevPath = storage.getItem("currentPath") as string;
     storage.setItem("prevPath", prevPath);
 
     storage.setItem("currentPath", globalThis.location.pathname);

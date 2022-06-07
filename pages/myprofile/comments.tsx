@@ -1,10 +1,11 @@
-import { ReactElement } from "react";
 import Link from "next/link";
+import { ReactElement } from "react";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
-import { myCommentsState } from "pages/posts/[id]/comments";
-import MyProfileLayout from "components/myprofile/MyProfileLayout";
+
 import { formatDate } from "utils/format-date";
+import { IMyComment, myCommentsState } from "pages/posts/[id]/comments";
+import MyProfileLayout from "components/myprofile/MyProfileLayout";
 
 const MyComments = () => {
   const now = new Date();
@@ -19,7 +20,7 @@ const MyComments = () => {
       </div>
       <ul>
         {myComments.length > 0 ? (
-          myComments.map((comment: any, i: number) => (
+          myComments.map((comment: IMyComment, i: number) => (
             <ListItem key={String(i)}>
               <div className="post_info" tabIndex={0}>
                 <strong className="list_title">{comment.comment}</strong>

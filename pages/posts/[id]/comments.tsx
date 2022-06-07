@@ -1,3 +1,4 @@
+import { GetStaticPropsContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useRef, useEffect, ReactElement, ChangeEvent } from "react";
@@ -19,24 +20,24 @@ import { FaRegCommentDots } from "react-icons/fa";
 
 import { formatDate } from "utils/format-date";
 import { tokenSelector } from "hooks/useAuth";
+import { IPostItem } from "pages";
+import { IPostProps } from "pages/posts/[id]";
 import Footer from "components/common/Footer";
-import { PostItemType } from "pages";
-import { PostProps } from "pages/posts/[id]";
 
-const commentsState = atomFamily<string[], number>({
-  key: "commentsState",
-  default: (postId: number) => {
-    return [];
-  },
-});
-
-interface MyComment {
+export interface IMyComment {
   postId: number;
   comment: string;
   postTitle: string;
 }
 
-export const myCommentsState = atom<MyComment[]>({
+const commentsState = atomFamily<string[], number>({
+  key: "commentsState",
+  default: (postId) => {
+    return [];
+  },
+});
+
+export const myCommentsState = atom<IMyComment[]>({
   key: "myCommentsState",
   default: [],
 });
@@ -52,12 +53,14 @@ export const commentCountSelector = selectorFamily<number, number>({
     },
 });
 
-const Comments = ({ post }: PostProps) => {
+const Comments = ({ post }: IPostProps) => {
   const [title, setTitle] = useState("WOOJINLEEdev Cafe");
   const [value, setValue] = useState("");
   const [registerBtnClass, setRegisterBtnClass] = useState("btn_disabled");
+
   const router = useRouter();
   const ref = useRef<HTMLTextAreaElement>(null);
+
   const now = new Date();
   const yyyymmdd = formatDate(now, "YYYY.MM.DD");
   const hhmm = formatDate(now, "hh:mm");
@@ -68,9 +71,9 @@ const Comments = ({ post }: PostProps) => {
   }, [value]);
 
   const [comments, setComments] = useRecoilState<string[]>(
-    commentsState(post.id)
+    commentsState(post.id),
   );
-  const setMyComments = useSetRecoilState<MyComment[]>(myCommentsState);
+  const setMyComments = useSetRecoilState<IMyComment[]>(myCommentsState);
   const commentsLength = useRecoilValue<number>(commentCountSelector(post.id));
   const token = useRecoilValue<string>(tokenSelector);
 
@@ -78,21 +81,21 @@ const Comments = ({ post }: PostProps) => {
     router.back();
   };
 
-  const onChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setValue(e.target.value);
   };
 
-  const handleCancelBtn = () => {
+  const handleCancelBtnClick = () => {
     setValue("");
     ref?.current?.focus();
   };
 
-  const handleRegisterBtn = () => {
+  const handleRegisterBtnClick = () => {
     if (value.trim().length === 0) return false;
 
     if (value.trim().length > 0) {
       setComments((comments: string[]) => [value, ...comments]);
-      setMyComments((myComments: MyComment[]) => [
+      setMyComments((myComments: IMyComment[]) => [
         { postId: post.id, comment: value, postTitle: post.title },
         ...myComments,
       ]);
@@ -137,22 +140,22 @@ const Comments = ({ post }: PostProps) => {
             placeholder="댓글을 남겨보세요."
             maxLength={300}
             value={value}
-            onChange={onChange}
+            onChange={handleCommentChange}
             ref={ref}
           />
           <div className="textarea_footer">
             <button
               type="button"
               className="btn_cancel"
-              onClick={handleCancelBtn}
+              onClick={handleCancelBtnClick}
             >
               취소
             </button>
             <button
               type="button"
               className={registerBtnClass}
-              onClick={handleRegisterBtn}
-              disabled={registerBtnClass === "btn_disabled" && true}
+              onClick={handleRegisterBtnClick}
+              disabled={registerBtnClass === "btn_disabled" ? true : false}
             >
               등록
             </button>
@@ -198,16 +201,16 @@ export async function getStaticPaths() {
   const res = await axios.get("https://jsonplaceholder.typicode.com/posts");
   const data = res.data;
 
-  const paths = data.map((item: PostItemType) => ({
+  const paths = data.map((item: IPostItem) => ({
     params: { id: String(item.id) },
   }));
 
   return { paths, fallback: false };
 }
 
-export async function getStaticProps({ params }: any) {
+export async function getStaticProps({ params }: GetStaticPropsContext) {
   const res = await axios.get(
-    `https://jsonplaceholder.typicode.com/posts/${params?.id}`
+    `https://jsonplaceholder.typicode.com/posts/${params?.id}`,
   );
   const data = res.data;
 
