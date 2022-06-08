@@ -11,10 +11,12 @@ import {
 } from "react";
 import { RecoilRoot } from "recoil";
 
-import GlobalStyle from "styles/global-styles";
 import { cafeTitle } from "pages";
 import CustomThemeProvider from "components/common/CustomThemeProvider";
 import DefaultLayout from "components/common/DefaultLayout";
+import GlobalStyle from "styles/global-styles";
+
+import * as ga from "lib/ga";
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -48,6 +50,18 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   }, [handleScrollY]);
 
   useEffect(() => storePathValues, [router.asPath]);
+
+  useEffect(() => {
+    const handleRouteChange = (url: string) => {
+      ga.pageview(url);
+    };
+
+    router.events.on("routeChangeComplete", handleRouteChange);
+
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
 
   function storePathValues() {
     const storage = globalThis?.sessionStorage;
