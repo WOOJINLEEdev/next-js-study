@@ -70,6 +70,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const prevPath = storage.getItem("currentPath") as string;
     storage.setItem("prevPath", prevPath);
 
+    if (globalThis.location.search !== "") {
+      return storage.setItem("currentPath", globalThis.location.search);
+    }
+
     storage.setItem("currentPath", globalThis.location.pathname);
   }
 

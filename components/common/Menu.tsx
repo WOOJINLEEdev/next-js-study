@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import styled from "styled-components";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { MdOutlineLocalCafe } from "react-icons/md";
@@ -15,8 +17,16 @@ export interface IMenuWrap {
 }
 
 const Menu = () => {
+  const router = useRouter();
+
   const [showStatus, setShowStatus] = useRecoilState(menuClickStatus);
   const token = useRecoilValue(tokenSelector);
+
+  const storage = globalThis?.sessionStorage;
+
+  useEffect(() => {
+    storage?.getItem("prevPath") !== router.asPath && setShowStatus(false);
+  }, [router.asPath, setShowStatus, storage]);
 
   function handleClick() {
     setShowStatus(false);
