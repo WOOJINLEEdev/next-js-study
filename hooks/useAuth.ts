@@ -1,4 +1,6 @@
 import { useSetRecoilState, atom, selector } from "recoil";
+import { v1 } from "uuid";
+
 import authApi from "pages/api/auth";
 
 interface AuthResponse {
@@ -6,14 +8,14 @@ interface AuthResponse {
 }
 
 export const authState = atom({
-  key: "auth",
+  key: `auth/${v1()}`,
   default: {
     token: "",
   },
 });
 
 export const isLoginSelector = selector({
-  key: "auth/isLogin",
+  key: `auth/isLogin/${v1()}`,
   get: ({ get }) => {
     const auth = get(authState);
 
@@ -22,7 +24,7 @@ export const isLoginSelector = selector({
 });
 
 export const tokenSelector = selector({
-  key: "auth/token",
+  key: `auth/token/${v1()}`,
   get: ({ get }) => {
     const auth = get(authState);
 

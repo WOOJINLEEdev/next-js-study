@@ -47,13 +47,13 @@ Search.getLayout = function getLayout(page: ReactElement) {
 };
 
 const SearchBar = styled.div`
+  z-index: ${(props) => props.theme.zIndices[3]};
   display: flex;
   justify-content: space-between;
   width: 100%;
   height: 51px;
   padding: 0 10px;
   background-color: rgb(136, 136, 136);
-  z-index: 100;
 
   & .search_btn_prev {
     & svg {
@@ -66,10 +66,10 @@ const SearchBar = styled.div`
 `;
 
 const SearchKeyWord = styled.div`
-  text-align: center;
   height: calc(100vh - 191px);
-  background: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  text-align: center;
 
   & p {
     line-height: calc(100vh - 191px);

@@ -1,17 +1,18 @@
 import { useEffect } from "react";
 import { useRecoilState, atom } from "recoil";
+import { v1 } from "uuid";
 
 import { dark, light } from "styles/theme";
 
 const isServer = typeof window === "undefined";
 
-export const themeStatus = atom({
-  key: "themeStatus",
+export const themeState = atom({
+  key: `themeState/${v1()}`,
   default: light,
 });
 
 export const useTheme = () => {
-  const [theme, setTheme] = useRecoilState(themeStatus);
+  const [theme, setTheme] = useRecoilState(themeState);
 
   useEffect(() => {
     if (!isServer) {

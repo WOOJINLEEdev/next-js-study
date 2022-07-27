@@ -75,7 +75,7 @@ const MenuMain = styled.div`
   & .menu_main_list {
     max-height: 288px;
     overflow: hidden;
-    transition: max-height 0.2s ease-in-out;
+    transition: ${(props) => props.theme.transitions[1]};
 
     & li {
       padding: 10px 0;
@@ -85,7 +85,7 @@ const MenuMain = styled.div`
   & .hide {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.2s ease-in-out;
+    transition: ${(props) => props.theme.transitions[1]};
 
     & li {
       padding: 10px 0;

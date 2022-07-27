@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "gen:sitemap": "node scripts/sitemap.js"
+    "gen:sitemap": "node scripts/sitemap.js",
+    "restart": "npm run build && npm run start"
   },
   "dependencies": {
     "@react-icons/all-files": "^4.1.0",
@@ -20,13 +21,17 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-icons": "^4.3.1",
+    "react-query": "^3.39.1",
     "recoil": "^0.6.1",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "styled-reset": "^4.4.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "17.0.21",
     "@types/react": "17.0.41",
     "@types/styled-components": "^5.1.24",
+    "@types/uuid": "^8.3.4",
     "eslint": "8.11.0",
     "eslint-config-next": "12.1.0",
     "globby": "^10.0.2",

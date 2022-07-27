@@ -1,18 +1,4 @@
-export interface ITheme {
-  theme?: {
-    colors?: {
-      titleColor?: string;
-      bgColor?: string;
-      boxColor?: string;
-      tabBorderColor?: string;
-      dimmedColor?: string;
-      editorBgColor?: string;
-      editorTitleColor?: string;
-    };
-  };
-}
-
-export const dark = {
+const darkTheme = {
   colors: {
     titleColor: "#b8b8b8",
     bgColor: "#333333",
@@ -25,7 +11,7 @@ export const dark = {
   },
 };
 
-export const light = {
+const lightTheme = {
   colors: {
     titleColor: "#333333",
     bgColor: "#ffffff",
@@ -37,3 +23,12 @@ export const light = {
     editorTitleColor: "#000000",
   },
 };
+
+const defaultTheme = {
+  fontSizes: ["14px", "16px", "18px", "22px", "26px", "32px", "40px"],
+  transitions: ["all 0.2s linear", "max-height 0.2s ease-in-out"],
+  zIndices: ["-1", "1", "10", "100", "1000"],
+};
+
+export const light = { ...defaultTheme, ...lightTheme };
+export const dark = { ...defaultTheme, ...darkTheme };

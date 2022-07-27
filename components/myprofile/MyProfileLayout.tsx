@@ -127,14 +127,15 @@ const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
 export default MyProfileLayout;
 
 const BtnWrap = styled.div`
+  z-index: ${(props) => props.theme.zIndices[3]};
   position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
-  top: 0;
   width: 100%;
   height: 51px;
   background: ${(props) => props.theme.colors.bgColor};
-  z-index: 100;
+  transition: ${(props) => props.theme.transitions[0]};
 
   & .prev_btn {
     height: 51px;
@@ -162,6 +163,7 @@ const ProfileHead = styled.div`
   color: ${(props) => props.theme.colors.titleColor};
   background: ${(props) => props.theme.colors.bgColor};
   border-bottom: 10px solid #e6e6e6;
+  transition: ${(props) => props.theme.transitions[0]};
 
   & .user_text {
     width: calc(100% - 80px);
@@ -195,22 +197,24 @@ const ProfileHead = styled.div`
 `;
 
 const ProfileContent = styled.div`
-  background: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
 `;
 
 const TabBox = styled.div`
+  z-index: ${(props) => props.theme.zIndices[2]};
   display: flex;
   justify-content: space-between;
   width: 100%;
-  min-height: 48px;
   max-width: 960px;
-  margin: 0 auto;
+  min-height: 48px;
   padding: 0 16px;
-  background-color: ${(props) => props.theme.colors.bgColor};
+  margin: 0 auto;
   color: ${(props) => props.theme.colors.titleColor};
+  background-color: ${(props) => props.theme.colors.bgColor};
   border-bottom: 1px solid #e6e6e6;
-  z-index: 10;
+  transition: ${(props) => props.theme.transitions[0]};
 
   & ul {
     display: flex;
@@ -246,8 +250,9 @@ const MyBoardWrap = styled.div`
   max-width: 960px;
   padding: 0 16px;
   margin: 0 auto;
-  background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
   min-height: calc(100vh - 362px);
 
   & .board_header {

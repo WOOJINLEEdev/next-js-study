@@ -4,14 +4,16 @@ import Head from "next/head";
 import axios from "axios";
 import styled from "styled-components";
 import { selectorFamily, useRecoilValue } from "recoil";
+import { dehydrate, QueryClient, useQuery } from "react-query";
 import { AiOutlineUserAdd, AiOutlineUser } from "react-icons/ai";
+import { v1 } from "uuid";
 
 import { tokenSelector } from "hooks/useAuth";
 import { formatDate } from "utils/format-date";
+
 import { commentCountSelector } from "pages/posts/[id]/comments";
 
 interface IHomeProps {
-  postList: IPostItem[];
   activeTab: string;
 }
 
@@ -55,7 +57,7 @@ const TABS = [
 ];
 
 export const commentCountsSelector = selectorFamily({
-  key: "commentCountsSelector",
+  key: `commentCountsSelector/${v1()}`,
   get:
     (postIdList: number[]) =>
     ({ get }) => {
@@ -72,13 +74,21 @@ export const commentCountsSelector = selectorFamily({
 
 export const cafeTitle = "WOOJINLEEdev Cafe";
 
-function Home({ postList, activeTab }: IHomeProps) {
+const Home = ({ activeTab }: IHomeProps) => {
+  const { data: postList } = useQuery<
+    IPostItem[],
+    unknown,
+    IPostItem[],
+    string
+  >(getUrl(activeTab), getPostList);
+
   const now = new Date();
   const yymmdd = formatDate(now, "YY.MM.DD");
 
-  const idList: number[] = postList.map((post: IPostItem) => {
-    return post.id;
-  });
+  const idList: number[] =
+    postList?.map((post: IPostItem) => {
+      return post.id;
+    }) ?? [];
 
   const commentCounts = useRecoilValue<ICommentCount[]>(
     commentCountsSelector(idList),
@@ -192,11 +202,13 @@ function Home({ postList, activeTab }: IHomeProps) {
       </Container>
     </>
   );
+};
+
+function getPostList({ queryKey }: { queryKey: string[] }) {
+  return axios.get<IPostItem[]>(queryKey[0]).then((res) => res.data);
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { tab } = query;
-
+function getUrl(tab?: string | string[]) {
   let url = "https://jsonplaceholder.typicode.com/posts";
   switch (tab) {
     case Tabs.POPULAR:
@@ -207,11 +219,22 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       break;
   }
 
-  const postList = await axios.get(url).then((res) => res.data);
+  return url;
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const queryClient = new QueryClient();
+
+  const { tab } = query;
+
+  await queryClient.prefetchQuery<IPostItem[], unknown, IPostItem[], string>(
+    getUrl(tab),
+    getPostList,
+  );
 
   return {
     props: {
-      postList,
+      dehydratedState: dehydrate(queryClient),
       activeTab: tab || "",
     },
   };
@@ -222,29 +245,33 @@ export default Home;
 const Container = styled.main`
   width: 100%;
   color: ${(props) => props.theme.colors.titleColor};
-  background-color: ${(props) => props.theme.colors.bgColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
 `;
 
 const Section = styled.section`
+  z-index: ${(props) => props.theme.zIndices[0]};
+  top: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  top: 0;
   width: 100%;
   height: 188px;
   padding-bottom: 15px;
+  color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
   box-sizing: border-box;
   -webkit-transform: translateZ(0);
-  z-index: -1;
 
   &:before {
+    z-index: ${(props) => props.theme.zIndices[0]};
     content: "";
     position: absolute;
+    top: 0;
     width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.14);
-    z-index: -1;
-    top: 0;
     background-image: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.06));
   }
 
@@ -261,10 +288,11 @@ const Section = styled.section`
   }
 
   & .info {
-    display: flex;
+    z-index: ${(props) => props.theme.zIndices[1]};
     position: absolute;
     left: 0;
     right: 0;
+    display: flex;
     bottom: 14px;
     width: 100%;
     max-width: 960px;
@@ -272,7 +300,6 @@ const Section = styled.section`
     padding: 0 15px 0 17px;
     margin: 0 auto;
     box-sizing: border-box;
-    z-index: 1;
   }
 
   & .cafe_img {
@@ -327,8 +354,11 @@ const Section = styled.section`
 
 const ListGroup = styled.ul`
   max-width: 960px;
-  margin: 0 auto;
   padding: 0 16px;
+  margin: 0 auto;
+  color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
 `;
 
 const ListItem = styled.li`
@@ -341,9 +371,6 @@ const ListItem = styled.li`
   border-bottom: 0.5px solid #e6e6e6;
   word-break: break-word;
   word-wrap: break-word;
-  background-color: ${(props) => props.theme.colors.bgColor};
-  color: ${(props) => props.theme.colors.titleColor};
-
   &:last-child {
     border-bottom: 0;
     padding-bottom: 22px;
@@ -421,19 +448,20 @@ const ListItem = styled.li`
 `;
 
 const TabBox = styled.div`
+  z-index: ${(props) => props.theme.zIndices[2]};
   position: sticky;
+  top: 51px;
   display: flex;
   justify-content: space-between;
   width: 100%;
   height: 48px;
   max-width: 960px;
-  top: 51px;
-  margin: 0 auto;
   padding: 0 16px;
-  background-color: ${(props) => props.theme.colors.bgColor};
+  margin: 0 auto;
   color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
   border-bottom: 1px solid #e6e6e6;
-  z-index: 10;
 
   & ul {
     display: flex;

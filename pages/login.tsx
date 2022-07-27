@@ -44,7 +44,7 @@ const Login = () => {
     setNaverIdToken(naverToken);
   };
 
-  const handleNaverLoginClick = () => {
+  const handleNaverLoginBtnClick = () => {
     const naverLoginButton = document.getElementById(
       "naverIdLogin_loginButton",
     );
@@ -191,7 +191,8 @@ const Login = () => {
 
           <div>
             <NaverLoginBtn
-              onClick={handleNaverLoginClick}
+              type="button"
+              onClick={handleNaverLoginBtnClick}
               aria-label="네이버 아이디로 로그인"
             />
             <div
@@ -218,8 +219,9 @@ const Container = styled.div`
   position: relative;
   min-height: calc(100vh - 190px);
   margin: 0 auto;
-  background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
 
   & h2 {
     overflow: hidden;
@@ -242,29 +244,11 @@ const Wrapper = styled.div`
   & #naverIdLogin {
     display: none;
   }
-
-  & .join_btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 14px 0 13px;
-    margin-top: 14px;
-    border: ${(props) => props.theme.colors.borderColor};
-    border-radius: 6px;
-    background-color: ${(props) => props.theme.colors.bgColor};
-    color: ${(props) => props.theme.colors.titleColor};
-    font-size: 18px;
-    font-weight: 700;
-    user-select: none;
-  }
 `;
 
 const Form = styled.form`
   position: relative;
   padding: 20px 0;
-  background-color: ${(props) => props.theme.colors.bgColor};
-  color: ${(props) => props.theme.colors.titleColor};
 
   & .password_icon,
   .user_id_icon {
@@ -371,15 +355,4 @@ const RemoveBtn = styled.button`
     width: 20px;
     height: 20px;
   }
-`;
-
-const SignUpWrapper = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  right: auto;
-  bottom: auto;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
-  border-radius: 5px;
 `;

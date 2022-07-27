@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 
 import { formatDate } from "utils/format-date";
+
 import { IMyComment, myCommentsState } from "pages/posts/[id]/comments";
 import MyProfileLayout from "components/myprofile/MyProfileLayout";
 
@@ -21,7 +22,7 @@ const MyComments = () => {
       <ul>
         {myComments.length > 0 ? (
           myComments.map((comment: IMyComment, i: number) => (
-            <ListItem key={String(i)}>
+            <ListItem key={`my_comment_${i}`}>
               <div className="post_info" tabIndex={0}>
                 <strong className="list_title">{comment.comment}</strong>
 

@@ -1,14 +1,19 @@
 import styled from "styled-components";
 
 const Footer = () => {
+  const footerList = ["이용약관", "개인정보처리방침", "고객센터", "오류신고"];
+
   return (
     <Container className="footer">
       <nav aria-label="footer navigation">
-        <ul className="footer_menu">
-          <li className="footer_menu_list">이용약관</li>
-          <li className="footer_menu_list">개인정보처리방침</li>
-          <li className="footer_menu_list">카페 고객센터</li>
-          <li className="footer_menu_list">오류신고</li>
+        <ul className="footer_list">
+          {footerList.map((item, i) => {
+            return (
+              <li key={`footer_item_${i}`} className="footer_item">
+                {item}
+              </li>
+            );
+          })}
         </ul>
       </nav>
       <address className="footer_address">주소: OO시 OO구 OOO로</address>
@@ -23,30 +28,31 @@ export default Footer;
 
 const Container = styled.footer`
   width: 100%;
+  padding-bottom: 47px;
   margin: 0 auto;
   font-size: 12px;
-  background: ${(props) => props.theme.colors.bgColor};
-  color: ${(props) => props.theme.colors.titleColor};
   border-top: 2px solid #efefef;
-  padding-bottom: 47px;
+  color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
 
-  & .footer_menu {
+  & .footer_list {
     display: table;
     padding: 15px 0;
     margin: 0 auto;
   }
 
-  & .footer_menu:after {
+  & .footer_list:after {
     display: block;
     clear: both;
     content: "";
   }
 
-  & .footer_menu_list {
+  & .footer_item {
     float: left;
   }
 
-  & .footer_menu_list + .footer_menu_list {
+  & .footer_item + .footer_item {
     padding-left: 10px;
   }
 

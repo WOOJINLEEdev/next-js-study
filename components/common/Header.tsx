@@ -1,17 +1,19 @@
+import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";
 import styled from "styled-components";
 import { atom, useRecoilState, useSetRecoilState } from "recoil";
 import { HiMenu } from "react-icons/hi";
 import { GoSearch } from "react-icons/go";
-
-import { themeStatus, useTheme } from "hooks/useTheme";
 import { MdOutlineLightMode, MdDarkMode } from "react-icons/md";
+import { v1 } from "uuid";
+
+import { themeState, useTheme } from "hooks/useTheme";
+
 import { dark, light } from "styles/theme";
 
 interface IHeaderProps {
-  scrollStatus: boolean;
+  scrollState: boolean;
   cafeTitle: string;
 }
 
@@ -19,33 +21,33 @@ interface IContainer {
   showDivider: boolean;
 }
 
-export const menuClickStatus = atom<boolean>({
-  key: "menuClickStatus",
+export const menuClickState = atom<boolean>({
+  key: `menuClickState/${v1()}`,
   default: false,
 });
 
-const Header = ({ scrollStatus, cafeTitle }: IHeaderProps) => {
+const Header = ({ scrollState, cafeTitle }: IHeaderProps) => {
   const router = useRouter();
 
   const [title, setTitle] = useState("");
   const [showDivider, setShowDivider] = useState(false);
 
-  const setMenuStatus = useSetRecoilState(menuClickStatus);
-  const [theme, setTheme] = useRecoilState(themeStatus);
+  const setMenuState = useSetRecoilState(menuClickState);
+  const [theme, setTheme] = useRecoilState(themeState);
 
   const themeMode = useTheme();
 
   useEffect(() => {
-    scrollStatus && setTitle(cafeTitle);
+    scrollState && setTitle(cafeTitle);
 
-    !scrollStatus && setTitle("");
+    !scrollState && setTitle("");
 
     router.pathname !== "/" && setTitle(cafeTitle);
     router.pathname !== "/" ? setShowDivider(true) : setShowDivider(false);
-  }, [scrollStatus, router.pathname, cafeTitle]);
+  }, [scrollState, router.pathname, cafeTitle]);
 
   const handleMenuClick = () => {
-    setMenuStatus(true);
+    setMenuState(true);
   };
 
   const handleModeBtnClick = () => {
@@ -74,7 +76,7 @@ const Header = ({ scrollStatus, cafeTitle }: IHeaderProps) => {
           {themeMode === light ? <MdOutlineLightMode /> : <MdDarkMode />}
         </ModeBtn>
         <Link href="/search" passHref>
-          <SearchBtn role="button">
+          <SearchBtn role="button" aria-label="검색 버튼">
             <GoSearch />
             <span className="visually_hidden">검색 버튼</span>
           </SearchBtn>
@@ -97,18 +99,19 @@ const Header = ({ scrollStatus, cafeTitle }: IHeaderProps) => {
 export default Header;
 
 const Container = styled.header<IContainer>`
+  z-index: ${(props) => props.theme.zIndices[2]};
   position: sticky;
+  top: 0;
   display: flex;
   justify-content: space-between;
   width: 100%;
   height: 51px;
-  top: 0;
-  text-align: center;
   line-height: 51px;
-  background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
-  z-index: 99;
+  background: ${(props) => props.theme.colors.bgColor};
   border-bottom: ${(props) => (props.showDivider ? "1px solid #e6e6e6" : "0")};
+  text-align: center;
+  transition: ${(props) => props.theme.transitions[0]};
 
   & .home_link {
     min-width: 79px;

@@ -10,6 +10,7 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 
 import { formatDate } from "utils/format-date";
+
 import { cafeTitle, IPostItem } from "pages";
 import { commentCountSelector } from "pages/posts/[id]/comments";
 import Header from "components/common/Header";
@@ -29,7 +30,7 @@ const Post = ({ post }: IPostProps) => {
   const yyyymmdd = formatDate(now, "YYYY.MM.DD");
   const hhmm = formatDate(now, "hh:mm");
 
-  const handlePrevBtn = () => {
+  const handlePrevBtnClick = () => {
     router.push("/");
   };
 
@@ -74,7 +75,7 @@ const Post = ({ post }: IPostProps) => {
           <a
             role="button"
             className="prev_btn"
-            onClick={handlePrevBtn}
+            onClick={handlePrevBtnClick}
             tabIndex={0}
           >
             <HiMenu />
@@ -124,7 +125,7 @@ export default Post;
 Post.getLayout = function getLayout(page: ReactElement) {
   return (
     <>
-      <Header scrollStatus={false} cafeTitle={cafeTitle} />
+      <Header scrollState={false} cafeTitle={cafeTitle} />
       <Menu />
       {page}
     </>
@@ -136,13 +137,17 @@ const Container = styled.main`
   height: calc(100vh - 51px);
   color: ${(props) => props.theme.colors.titleColor};
   background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
 `;
 
 const PostHeader = styled.div`
   width: 90%;
   padding: 20px 0;
   margin: 0 auto;
+  color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
   border-bottom: ${(props) => props.theme.colors.borderColor};
+  transition: ${(props) => props.theme.transitions[0]};
 
   & .post_title {
     display: -webkit-box;
@@ -212,8 +217,6 @@ const BtnList = styled.div`
   line-height: 47px;
   bottom: 0;
   border-top: ${(props) => props.theme.colors.borderColor};
-  background: ${(props) => props.theme.colors.bgColor};
-  color: ${(props) => props.theme.colors.titleColor};
 
   & .prev_btn {
     display: flex;

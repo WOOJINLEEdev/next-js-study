@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 const WysiwigEditor = dynamic(
   () => import("components/articles/WysiwigEditor"),
-  { loading: () => <p>The Editor is loading...</p>, ssr: false }
+  { loading: () => <p>The Editor is loading...</p>, ssr: false },
 );
 
 const Write: React.FC = () => {
@@ -15,12 +15,9 @@ const Write: React.FC = () => {
     inputRef?.current?.focus();
   }, []);
 
-  const handleTitleChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setArticleTitle(e.target.value);
-    },
-    [articleTitle]
-  );
+  const handleTitleChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setArticleTitle(e.currentTarget.value);
+  }, []);
 
   const handleEditorChange = useCallback((value: string) => {
     console.log("handleEditorChange value ", value);

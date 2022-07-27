@@ -6,18 +6,18 @@ import Menu from "components/common/Menu";
 
 export interface IDefaultLayoutProps {
   children: ReactElement;
-  scrollStatus: boolean;
+  scrollState: boolean;
   cafeTitle: string;
 }
 
 const DefaultLayout = ({
   children,
-  scrollStatus,
+  scrollState,
   cafeTitle,
 }: IDefaultLayoutProps) => {
   return (
     <>
-      <Header scrollStatus={scrollStatus} cafeTitle={cafeTitle} />
+      <Header scrollState={scrollState} cafeTitle={cafeTitle} />
       <Menu />
       {children}
       <Footer />

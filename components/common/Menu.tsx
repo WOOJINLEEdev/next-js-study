@@ -9,8 +9,9 @@ import { VscBellDot } from "react-icons/vsc";
 import { BsChatDots } from "react-icons/bs";
 
 import { tokenSelector } from "hooks/useAuth";
+
 import MenuList from "components/common/MenuList";
-import { menuClickStatus } from "components/common/Header";
+import { menuClickState } from "components/common/Header";
 
 export interface IMenuWrap {
   show: boolean;
@@ -19,23 +20,23 @@ export interface IMenuWrap {
 const Menu = () => {
   const router = useRouter();
 
-  const [showStatus, setShowStatus] = useRecoilState(menuClickStatus);
+  const [showState, setShowState] = useRecoilState(menuClickState);
   const token = useRecoilValue(tokenSelector);
 
   const storage = globalThis?.sessionStorage;
 
   useEffect(() => {
-    storage?.getItem("prevPath") !== router.asPath && setShowStatus(false);
-  }, [router.asPath, setShowStatus, storage]);
+    storage?.getItem("prevPath") !== router.asPath && setShowState(false);
+  }, [router.asPath, setShowState, storage]);
 
   function handleClick() {
-    setShowStatus(false);
+    setShowState(false);
   }
 
   return (
     <MenuWrap
-      className={showStatus ? "menu_wrap" : "menu_hidden"}
-      show={showStatus}
+      className={showState ? "menu_wrap" : "menu_hidden"}
+      show={showState}
     >
       <MenuHeader className="menu_header" onClick={handleClick}>
         <div className="user_area">
@@ -113,20 +114,20 @@ const Menu = () => {
 export default Menu;
 
 const MenuWrap = styled.aside<IMenuWrap>`
+  z-index: ${(props) => props.theme.zIndices[4]};
   position: fixed;
+  top: 0;
+  right: 0;
   display: ${(props) => props.show && "flex"};
   flex-direction: column;
   width: 80%;
   min-width: 275px;
   max-width: 300px;
   min-height: 100vh;
-  top: 0;
-  right: 0;
   margin: 0;
-  background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
+  background-color: ${(props) => props.theme.colors.bgColor};
   box-shadow: -5px 5px 10px rgba(0, 0, 0, 0.5);
-  z-index: 101;
   transform: ${(props) => props.show === false && "translateX(310px)"};
   transition: ${(props) =>
     props.show ? "transform 0.3s ease" : "transform 0.5s ease"};
@@ -172,8 +173,8 @@ const MenuHeader = styled.div`
       flex-direction: column;
       justify-content: space-evenly;
       height: 48px;
-      text-align: center;
       font-size: 11px;
+      text-align: center;
       vertical-align: top;
 
       & svg {

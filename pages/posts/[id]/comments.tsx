@@ -17,10 +17,12 @@ import {
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
 import { FaRegCommentDots } from "react-icons/fa";
+import { v1 } from "uuid";
 
-import { formatDate } from "utils/format-date";
 import { tokenSelector } from "hooks/useAuth";
-import { IPostItem } from "pages";
+import { formatDate } from "utils/format-date";
+
+import { cafeTitle, IPostItem } from "pages";
 import { IPostProps } from "pages/posts/[id]";
 import Footer from "components/common/Footer";
 
@@ -31,19 +33,19 @@ export interface IMyComment {
 }
 
 const commentsState = atomFamily<string[], number>({
-  key: "commentsState",
+  key: `commentsState/${v1()}`,
   default: (postId) => {
     return [];
   },
 });
 
 export const myCommentsState = atom<IMyComment[]>({
-  key: "myCommentsState",
+  key: `myCommentsState/${v1()}`,
   default: [],
 });
 
 export const commentCountSelector = selectorFamily<number, number>({
-  key: "commentCountSelector",
+  key: `commentCountSelector/${v1()}`,
   get:
     (postId: number) =>
     ({ get }) => {
@@ -54,7 +56,6 @@ export const commentCountSelector = selectorFamily<number, number>({
 });
 
 const Comments = ({ post }: IPostProps) => {
-  const [title, setTitle] = useState("WOOJINLEEdev Cafe");
   const [value, setValue] = useState("");
   const [registerBtnClass, setRegisterBtnClass] = useState("btn_disabled");
 
@@ -82,7 +83,7 @@ const Comments = ({ post }: IPostProps) => {
   };
 
   const handleCommentChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(e.target.value);
+    setValue(e.currentTarget.value);
   };
 
   const handleCancelBtnClick = () => {
@@ -112,13 +113,13 @@ const Comments = ({ post }: IPostProps) => {
             role="button"
             className="search_btn_prev"
             onClick={handlePrevBtnClick}
+            aria-label="이전 페이지로 돌아가기"
           >
             <MdOutlineKeyboardArrowLeft />
-            <span className="visually_hidden">이전 페이지로 돌아가기</span>
           </a>
           <div className="title_area">
             <h1>댓글 {commentsLength}</h1>
-            <h2>{title}</h2>
+            <h2>{cafeTitle}</h2>
           </div>
         </div>
       </CommentHeader>
@@ -323,7 +324,7 @@ const CommentHeader = styled.div`
   height: 51px;
   padding: 0 10px;
   background-color: rgb(136, 136, 136);
-  z-index: 100;
+  z-index: ${(props) => props.theme.zIndices[3]};
 
   & .comment_header_wrap {
     position: relative;

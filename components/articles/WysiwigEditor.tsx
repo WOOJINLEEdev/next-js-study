@@ -1,9 +1,3 @@
-import "@toast-ui/editor/dist/toastui-editor.css";
-import "tui-color-picker/dist/tui-color-picker.css";
-import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
-import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
-import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
-import { Editor as EditorType, EditorProps } from "@toast-ui/react-editor";
 import dynamic from "next/dynamic";
 import {
   forwardRef,
@@ -13,9 +7,16 @@ import {
   useRef,
 } from "react";
 import { useRecoilValue } from "recoil";
+import "@toast-ui/editor/dist/toastui-editor.css";
+import "tui-color-picker/dist/tui-color-picker.css";
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
+import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
+import colorSyntax from "@toast-ui/editor-plugin-color-syntax";
+import { Editor as EditorType, EditorProps } from "@toast-ui/react-editor";
+
+import { themeState } from "hooks/useTheme";
 
 import { ITuiEditorWithForwardedProps } from "components/articles/TuiEditorWrapper";
-import { themeStatus } from "hooks/useTheme";
 
 interface IProps extends EditorProps {
   onChange: (value: string) => void;
@@ -42,13 +43,14 @@ EditorWithForwardedRef.displayName = "EditorWithForwardedRef";
 
 const WysiwigEditor = (props: IProps) => {
   const editorRef = useRef<EditorType>();
-  const themeState = useRecoilValue(themeStatus);
+  const theme = useRecoilValue(themeState);
+
   const isServer = typeof window === "undefined";
-  const theme = !isServer && localStorage.getItem("theme");
+  const getTheme = !isServer && localStorage.getItem("theme");
 
   useEffect(() => {
-    console.log("theme", theme);
-  }, [theme, themeState]);
+    console.log("theme", getTheme);
+  }, [getTheme, theme]);
 
   const handleChange = useCallback(() => {
     if (!editorRef.current) {
@@ -66,7 +68,7 @@ const WysiwigEditor = (props: IProps) => {
   return (
     <div
       className={`editor-panel-editor ${
-        theme === "dark" && " toastui-editor-dark"
+        getTheme === "dark" && " toastui-editor-dark"
       }`}
     >
       <EditorWithForwardedRef

@@ -3,6 +3,7 @@ import { ReactElement } from "react";
 import styled from "styled-components";
 
 import { formatDate } from "utils/format-date";
+
 import MyProfileLayout from "components/myprofile/MyProfileLayout";
 
 interface IData {
@@ -24,7 +25,7 @@ const MyArticles = () => {
       <ul>
         {datas.length > 0 ? (
           datas.map((data: IData, i: number) => (
-            <ListItem key={String(i)}>
+            <ListItem key={`my_article_${i}`}>
               <div className="post_info" tabIndex={0}>
                 <Link href="/posts/[id]" as={`/posts/${data.postId}`} passHref>
                   <strong className="list_title">{data.postTitle}</strong>
