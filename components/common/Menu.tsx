@@ -8,37 +8,30 @@ import { HiOutlinePencil } from "react-icons/hi";
 import { VscBellDot } from "react-icons/vsc";
 import { BsChatDots } from "react-icons/bs";
 
-import { tokenSelector } from "hooks/useAuth";
-
 import MenuList from "components/common/MenuList";
-import { menuClickState } from "components/common/Header";
 
-export interface IMenuWrap {
-  show: boolean;
-}
+import { menuClickState } from "state/menu";
+import { tokenSelector } from "state/auth";
 
 const Menu = () => {
   const router = useRouter();
 
-  const [showState, setShowState] = useRecoilState(menuClickState);
+  const [show, setShow] = useRecoilState(menuClickState);
   const token = useRecoilValue(tokenSelector);
 
   const storage = globalThis?.sessionStorage;
 
   useEffect(() => {
-    storage?.getItem("prevPath") !== router.asPath && setShowState(false);
-  }, [router.asPath, setShowState, storage]);
+    storage?.getItem("prevPath") !== router.asPath && setShow(false);
+  }, [router.asPath, setShow, storage]);
 
-  function handleClick() {
-    setShowState(false);
-  }
+  const handleMenuHeaderClick = () => {
+    setShow(false);
+  };
 
   return (
-    <MenuWrap
-      className={showState ? "menu_wrap" : "menu_hidden"}
-      show={showState}
-    >
-      <MenuHeader className="menu_header" onClick={handleClick}>
+    <MenuWrap className={show ? "menu_wrap" : "menu_hidden"} show={show}>
+      <MenuHeader className="menu_header" onClick={handleMenuHeaderClick}>
         <div className="user_area">
           {token ? (
             <>
@@ -113,7 +106,11 @@ const Menu = () => {
 
 export default Menu;
 
-const MenuWrap = styled.aside<IMenuWrap>`
+interface IMenuWrapProps {
+  show: boolean;
+}
+
+const MenuWrap = styled.aside<IMenuWrapProps>`
   z-index: ${(props) => props.theme.zIndices[4]};
   position: fixed;
   top: 0;
@@ -137,17 +134,17 @@ const MenuHeader = styled.div`
   width: 100%;
   padding: 20px 20px 0 20px;
 
-  & .user_area {
+  .user_area {
     display: flex;
     min-width: 100%;
     line-height: 60px;
 
-    & .user_id {
+    .user_id {
       width: calc(100% - 50px);
     }
   }
 
-  & .user_photo {
+  .user_photo {
     display: block;
     width: 40px;
     height: 40px;
@@ -156,19 +153,19 @@ const MenuHeader = styled.div`
     background: #efefef;
   }
 
-  & .menu_btn_list {
+  .menu_btn_list {
     display: flex;
     padding: 15px 0;
     text-align: center;
     border-bottom: 1px solid #f0f0f0;
 
-    & li {
+    li {
       width: 25%;
       max-width: 65px;
       font-size: 11px;
     }
 
-    & .menu_btn_link {
+    .menu_btn_link {
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
@@ -177,7 +174,7 @@ const MenuHeader = styled.div`
       text-align: center;
       vertical-align: top;
 
-      & svg {
+      svg {
         width: 28px;
         height: 28px;
         margin: 0 auto;

@@ -56,18 +56,18 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
 
-  & .article_wrap {
+  .article_wrap {
     max-width: 960px;
     min-height: 100vh;
     margin: 0 auto;
     padding: 20px;
   }
 
-  & .article_btn_wrap {
+  .article_btn_wrap {
     text-align: right;
   }
 
-  & .article_title {
+  .article_title {
     width: 100%;
     min-height: 20px;
     padding: 10px 15px;
@@ -78,11 +78,11 @@ const Container = styled.div`
     margin-bottom: 20px;
   }
 
-  & .toastui-editor-contents {
+  .toastui-editor-contents {
     padding: 18px 20px;
   }
 
-  & .article_btn_register {
+  .article_btn_register {
     padding: 10px 20px;
     font-weight: bold;
     background-color: #efefef;
@@ -91,10 +91,4 @@ const Container = styled.div`
     border-radius: 5px;
     margin-bottom: 20px;
   }
-`;
-
-const EditorLoading = styled.div`
-  width: 100%;
-  height: 600px;
-  background: #efefef;
 `;

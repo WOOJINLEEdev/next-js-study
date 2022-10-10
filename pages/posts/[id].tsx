@@ -6,25 +6,28 @@ import { ReactElement } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
+import { dehydrate, QueryClient } from "react-query";
 import { FaRegCommentDots } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 
+import useGetPostItem from "hooks/api/useGetPostItem";
 import { formatDate } from "utils/format-date";
 
-import { cafeTitle, IPostItem } from "pages";
-import { commentCountSelector } from "pages/posts/[id]/comments";
 import Header from "components/common/Header";
 import Menu from "components/common/Menu";
 
-export interface IPostProps {
-  post: IPostItem;
-}
+import { commentCountSelector } from "state/comment";
+import { CAFE_TITLE } from "constant";
+import { IPostItem } from "types";
 
-const Post = ({ post }: IPostProps) => {
+const Post = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const commentsLength = useRecoilValue<number>(commentCountSelector(post.id));
+  const { data, isLoading } = useGetPostItem(id);
+  const post = (data ?? {}) as IPostItem;
+
+  const commentsLength = useRecoilValue<number>(commentCountSelector(post?.id));
 
   const now = new Date();
   const yyyymmdd = formatDate(now, "YYYY.MM.DD");
@@ -33,6 +36,10 @@ const Post = ({ post }: IPostProps) => {
   const handlePrevBtnClick = () => {
     router.push("/");
   };
+
+  if (isLoading) {
+    return <div>loading...</div>;
+  }
 
   return (
     <>
@@ -112,12 +119,21 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const res = await axios.get(
-    `https://jsonplaceholder.typicode.com/posts/${params?.id}`,
-  );
-  const data = res.data;
+  const queryClient = new QueryClient();
 
-  return { props: { post: data } };
+  await queryClient.prefetchQuery(["post", params?.id], async () => {
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/posts/${params?.id}`,
+    );
+
+    return res.data;
+  });
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
 }
 
 export default Post;
@@ -125,7 +141,7 @@ export default Post;
 Post.getLayout = function getLayout(page: ReactElement) {
   return (
     <>
-      <Header scrollState={false} cafeTitle={cafeTitle} />
+      <Header scrollState={false} cafeTitle={CAFE_TITLE} />
       <Menu />
       {page}
     </>
@@ -149,7 +165,7 @@ const PostHeader = styled.div`
   border-bottom: ${(props) => props.theme.colors.borderColor};
   transition: ${(props) => props.theme.transitions[0]};
 
-  & .post_title {
+  .post_title {
     display: -webkit-box;
     height: 48px;
     overflow: hidden;
@@ -160,11 +176,11 @@ const PostHeader = styled.div`
     margin-bottom: 18px;
   }
 
-  & .user_area {
+  .user_area {
     display: flex;
   }
 
-  & .user_photo {
+  .user_photo {
     display: block;
     width: 40px;
     height: 40px;
@@ -172,21 +188,21 @@ const PostHeader = styled.div`
     background: #efefef;
   }
 
-  & .user_post_info {
+  .user_post_info {
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     padding-left: 10px;
   }
 
-  & .user_name {
+  .user_name {
     font-size: 15px;
   }
 
-  & .post_info {
+  .post_info {
     font-size: 13px;
 
-    & .post_date {
+    .post_date {
       margin-right: 7px;
     }
   }
@@ -197,7 +213,7 @@ const PostContent = styled.div`
   padding: 20px 10px;
   margin: 0 auto;
 
-  & p {
+  p {
     font-size: 16px;
     line-height: 25px;
   }
@@ -218,25 +234,25 @@ const BtnList = styled.div`
   bottom: 0;
   border-top: ${(props) => props.theme.colors.borderColor};
 
-  & .prev_btn {
+  .prev_btn {
     display: flex;
 
-    & svg {
+    svg {
       width: 19px;
       height: 19px;
       margin: 14px 0;
     }
   }
 
-  & .comment_btn {
+  .comment_btn {
     position: relative;
     display: flex;
     width: 50px;
 
-    & .comment_new_icon {
+    .comment_new_icon {
       position: absolute;
-      right: 20px;
       top: 12px;
+      right: 20px;
       width: 10px;
       height: 10px;
       margin: 0;
@@ -244,7 +260,7 @@ const BtnList = styled.div`
       background: #ff0000;
     }
 
-    & svg {
+    svg {
       display: inline-block;
       width: 19px;
       height: 19px;

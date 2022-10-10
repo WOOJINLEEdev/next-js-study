@@ -68,18 +68,18 @@ const Form = styled.form`
   border-radius: 20px;
   margin: 6px 0;
 
-  & input,
+  input,
   input::placeholder {
     width: 80%;
     color: #efefef;
   }
 
-  & .search_icon {
+  .search_icon {
     width: 20%;
     max-width: 40px;
     text-align: center;
 
-    & svg {
+    svg {
       width: 17px;
       height: 17px;
       margin: 11px 0;
@@ -94,7 +94,7 @@ const RemoveBtn = styled.button`
   padding: 10px;
   cursor: pointer;
 
-  & svg {
+  svg {
     width: 19px;
     height: 19px;
     color: #efefef;

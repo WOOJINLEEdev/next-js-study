@@ -5,28 +5,12 @@ import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
-import useAuth, { isLoginSelector, tokenSelector } from "hooks/useAuth";
+import useAuth from "hooks/useAuth";
+
 import Footer from "components/common/Footer";
 
-const Tabs = {
-  ARTICLES: "",
-  COMMENTS: "comments",
-};
-
-const TABS = [
-  {
-    key: Tabs.ARTICLES,
-    value: "0",
-    name: "작성글",
-    path: "/myprofile/articles",
-  },
-  {
-    key: Tabs.COMMENTS,
-    value: "1",
-    name: "작성댓글",
-    path: "/myprofile/comments",
-  },
-];
+import { isLoginSelector, tokenSelector } from "state/auth";
+import { PROFILE_TABS } from "constant";
 
 interface IMyProfileLayoutProps {
   children: ReactNode;
@@ -35,8 +19,9 @@ interface IMyProfileLayoutProps {
 const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
   const router = useRouter();
   const auth = useAuth();
-  const token = useRecoilValue<string>(tokenSelector);
-  const isLogin = useRecoilValue<boolean>(isLoginSelector);
+
+  const token = useRecoilValue(tokenSelector);
+  const isLogin = useRecoilValue(isLoginSelector);
 
   function handlePrevBtnClick() {
     router.back();
@@ -100,7 +85,7 @@ const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
       <ProfileContent>
         <TabBox>
           <ul>
-            {TABS.map((tab) => (
+            {PROFILE_TABS.map((tab) => (
               <li
                 key={tab.key}
                 className={router.pathname === tab.path ? "is_active" : ""}
@@ -137,10 +122,10 @@ const BtnWrap = styled.div`
   background: ${(props) => props.theme.colors.bgColor};
   transition: ${(props) => props.theme.transitions[0]};
 
-  & .prev_btn {
+  .prev_btn {
     height: 51px;
 
-    & svg {
+    svg {
       width: 41px;
       height: 41px;
       margin: 5px 0;
@@ -148,7 +133,7 @@ const BtnWrap = styled.div`
     }
   }
 
-  & .logout_btn {
+  .logout_btn {
     width: 80px;
     background: ${(props) => props.theme.colors.bgColor};
     color: ${(props) => props.theme.colors.titleColor};
@@ -165,12 +150,12 @@ const ProfileHead = styled.div`
   border-bottom: 10px solid #e6e6e6;
   transition: ${(props) => props.theme.transitions[0]};
 
-  & .user_text {
+  .user_text {
     width: calc(100% - 80px);
     font-size: 21px;
     font-weight: bold;
 
-    & .user_member_grade,
+    .user_member_grade,
     .user_visit {
       font-size: 13px;
       font-weight: normal;
@@ -179,14 +164,14 @@ const ProfileHead = styled.div`
     }
   }
 
-  & .user_login_link {
+  .user_login_link {
     width: calc(100% - 80px);
     line-height: 80px;
     font-size: 21px;
     font-weight: bold;
   }
 
-  & .user_photo {
+  .user_photo {
     display: block;
     width: 80px;
     height: 80px;
@@ -216,18 +201,18 @@ const TabBox = styled.div`
   border-bottom: 1px solid #e6e6e6;
   transition: ${(props) => props.theme.transitions[0]};
 
-  & ul {
+  ul {
     display: flex;
     width: 100%;
     height: 48px;
     line-height: 48px;
     text-align: center;
 
-    & li {
+    li {
       width: 50%;
       margin-left: 10px;
 
-      & .tab_link {
+      .tab_link {
         display: block;
         width: 100%;
         color: ${(props) => props.theme.colors.titleColor};
@@ -235,11 +220,11 @@ const TabBox = styled.div`
       }
     }
 
-    & li:first-child {
+    li:first-child {
       margin: 0;
     }
 
-    & .is_active {
+    .is_active {
       color: ${(props) => props.theme.colors.titleColor};
       border-bottom: ${(props) => props.theme.colors.tabBorderColor};
     }
@@ -255,12 +240,12 @@ const MyBoardWrap = styled.div`
   transition: ${(props) => props.theme.transitions[0]};
   min-height: calc(100vh - 362px);
 
-  & .board_header {
+  .board_header {
     height: 46px;
     line-height: 46px;
   }
 
-  & .no_data_item {
+  .no_data_item {
     text-align: center;
     min-height: calc(100vh - 408px);
     line-height: calc(100vh - 408px);

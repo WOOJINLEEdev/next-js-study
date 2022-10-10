@@ -55,8 +55,8 @@ const SearchBar = styled.div`
   padding: 0 10px;
   background-color: rgb(136, 136, 136);
 
-  & .search_btn_prev {
-    & svg {
+  .search_btn_prev {
+    svg {
       width: 41px;
       height: 41px;
       margin: 5px 0;
@@ -71,7 +71,7 @@ const SearchKeyWord = styled.div`
   background: ${(props) => props.theme.colors.bgColor};
   text-align: center;
 
-  & p {
+  p {
     line-height: calc(100vh - 191px);
   }
 `;

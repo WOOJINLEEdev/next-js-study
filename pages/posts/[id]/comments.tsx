@@ -1,66 +1,38 @@
-import { GetStaticPropsContext } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, useRef, useEffect, ReactElement, ChangeEvent } from "react";
-import {
-  atom,
-  atomFamily,
-  selectorFamily,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
-import axios from "axios";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import {
   MdOutlineKeyboardArrowLeft,
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
 import { FaRegCommentDots } from "react-icons/fa";
-import { v1 } from "uuid";
 
-import { tokenSelector } from "hooks/useAuth";
+import useGetPostItem from "hooks/api/useGetPostItem";
 import { formatDate } from "utils/format-date";
 
-import { cafeTitle, IPostItem } from "pages";
-import { IPostProps } from "pages/posts/[id]";
 import Footer from "components/common/Footer";
 
-export interface IMyComment {
-  postId: number;
-  comment: string;
-  postTitle: string;
-}
+import {
+  commentCountSelector,
+  commentsState,
+  myCommentsState,
+} from "state/comment";
+import { CAFE_TITLE } from "constant";
+import { IMyComment, IPostItem } from "types";
+import { tokenSelector } from "state/auth";
 
-const commentsState = atomFamily<string[], number>({
-  key: `commentsState/${v1()}`,
-  default: (postId) => {
-    return [];
-  },
-});
-
-export const myCommentsState = atom<IMyComment[]>({
-  key: `myCommentsState/${v1()}`,
-  default: [],
-});
-
-export const commentCountSelector = selectorFamily<number, number>({
-  key: `commentCountSelector/${v1()}`,
-  get:
-    (postId: number) =>
-    ({ get }) => {
-      const comments = get(commentsState(postId));
-
-      return comments.length;
-    },
-});
-
-const Comments = ({ post }: IPostProps) => {
+const Comments = () => {
   const [value, setValue] = useState("");
   const [registerBtnClass, setRegisterBtnClass] = useState("btn_disabled");
+  const commentRef = useRef<HTMLTextAreaElement>(null);
 
   const router = useRouter();
-  const ref = useRef<HTMLTextAreaElement>(null);
+  const { id } = router.query;
+
+  const { data } = useGetPostItem(id);
+  const post = (data ?? {}) as IPostItem;
 
   const now = new Date();
   const yyyymmdd = formatDate(now, "YYYY.MM.DD");
@@ -72,11 +44,11 @@ const Comments = ({ post }: IPostProps) => {
   }, [value]);
 
   const [comments, setComments] = useRecoilState<string[]>(
-    commentsState(post.id),
+    commentsState(post?.id),
   );
   const setMyComments = useSetRecoilState<IMyComment[]>(myCommentsState);
-  const commentsLength = useRecoilValue<number>(commentCountSelector(post.id));
-  const token = useRecoilValue<string>(tokenSelector);
+  const commentsLength = useRecoilValue(commentCountSelector(post.id));
+  const token = useRecoilValue(tokenSelector);
 
   const handlePrevBtnClick = () => {
     router.back();
@@ -88,7 +60,7 @@ const Comments = ({ post }: IPostProps) => {
 
   const handleCancelBtnClick = () => {
     setValue("");
-    ref?.current?.focus();
+    commentRef?.current?.focus();
   };
 
   const handleRegisterBtnClick = () => {
@@ -119,7 +91,7 @@ const Comments = ({ post }: IPostProps) => {
           </a>
           <div className="title_area">
             <h1>댓글 {commentsLength}</h1>
-            <h2>{cafeTitle}</h2>
+            <h2>{CAFE_TITLE}</h2>
           </div>
         </div>
       </CommentHeader>
@@ -142,7 +114,7 @@ const Comments = ({ post }: IPostProps) => {
             maxLength={300}
             value={value}
             onChange={handleCommentChange}
-            ref={ref}
+            ref={commentRef}
           />
           <div className="textarea_footer">
             <button
@@ -198,26 +170,6 @@ const Comments = ({ post }: IPostProps) => {
   );
 };
 
-export async function getStaticPaths() {
-  const res = await axios.get("https://jsonplaceholder.typicode.com/posts");
-  const data = res.data;
-
-  const paths = data.map((item: IPostItem) => ({
-    params: { id: String(item.id) },
-  }));
-
-  return { paths, fallback: false };
-}
-
-export async function getStaticProps({ params }: GetStaticPropsContext) {
-  const res = await axios.get(
-    `https://jsonplaceholder.typicode.com/posts/${params?.id}`,
-  );
-  const data = res.data;
-
-  return { props: { post: data } };
-}
-
 export default Comments;
 
 Comments.getLayout = function getLayout(page: ReactElement) {
@@ -235,23 +187,23 @@ const Container = styled.div`
   background: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
 
-  & .post_link_wrap {
+  .post_link_wrap {
     border-bottom: 10px solid #eee;
     padding: 0 15px;
   }
 
-  & .post_link {
+  .post_link {
     display: flex;
     height: 45px;
     line-height: 45px;
 
-    & svg {
+    svg {
       width: 21px;
       height: 21px;
       margin: 12px 0;
     }
 
-    & .post_title {
+    .post_title {
       width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -260,10 +212,10 @@ const Container = styled.div`
     }
   }
 
-  & .comment_content {
+  .comment_content {
     padding: 15px;
 
-    & .textarea_header {
+    .textarea_header {
       padding: 5px 10px;
       background-color: #efefef;
       text-align: right;
@@ -271,7 +223,7 @@ const Container = styled.div`
       border-top-right-radius: 6px;
     }
 
-    & .comment_textarea {
+    .comment_textarea {
       width: 100%;
       height: 120px;
       padding: 10px;
@@ -282,7 +234,7 @@ const Container = styled.div`
       line-height: 20px;
     }
 
-    & .textarea_footer {
+    .textarea_footer {
       display: flex;
       justify-content: flex-end;
       padding: 10px;
@@ -291,7 +243,7 @@ const Container = styled.div`
       border-bottom-right-radius: 6px;
       color: ${(props) => props.theme.colors.titleColor};
 
-      & button {
+      button {
         width: 43px;
         height: 30px;
         margin-left: 12px;
@@ -300,18 +252,18 @@ const Container = styled.div`
         border-radius: 6px;
       }
 
-      & .btn_cancel {
+      .btn_cancel {
         color: #676767;
         background-color: #e5e7ea;
       }
 
-      & .btn_register {
+      .btn_register {
         color: #009f47;
         background-color: rgba(3, 199, 90, 0.12);
         outline: none;
       }
 
-      & .btn_disabled {
+      .btn_disabled {
         color: rgba(0, 159, 71, 0.3);
         background-color: rgba(3, 199, 90, 0.06);
       }
@@ -326,18 +278,18 @@ const CommentHeader = styled.div`
   background-color: rgb(136, 136, 136);
   z-index: ${(props) => props.theme.zIndices[3]};
 
-  & .comment_header_wrap {
+  .comment_header_wrap {
     position: relative;
     height: 100%;
     text-align: center;
   }
 
-  & .search_btn_prev {
+  .search_btn_prev {
     position: absolute;
     left: 0;
     height: 51px;
 
-    & svg {
+    svg {
       width: 41px;
       height: 41px;
       margin: 5px 0;
@@ -345,16 +297,16 @@ const CommentHeader = styled.div`
     }
   }
 
-  & .title_area {
+  .title_area {
     padding: 10px 0;
     color: #fff;
 
-    & h1 {
+    h1 {
       font-size: 15px;
       font-weight: bold;
     }
 
-    & h2 {
+    h2 {
       margin-top: 5px;
       font-size: 11px;
     }
@@ -366,11 +318,11 @@ const NoData = styled.div`
   background: ${(props) => props.theme.colors.bgColor};
   color: ${(props) => props.theme.colors.titleColor};
 
-  & .no_comment {
+  .no_comment {
     margin: 120px auto;
   }
 
-  & svg {
+  svg {
     width: 50px;
     height: 50px;
     margin-bottom: 10px;
@@ -384,14 +336,14 @@ const CommentItemWrap = styled.div`
 const CommentItem = styled.div`
   padding: 15px 0;
 
-  & .comment_header {
-    & .user_link {
+  .comment_header {
+    .user_link {
       display: flex;
       height: 32px;
       line-height: 32px;
     }
 
-    & .user_image {
+    .user_image {
       width: 32px;
       height: 32px;
       background: #efefef;
@@ -399,23 +351,23 @@ const CommentItem = styled.div`
       margin: 0;
     }
 
-    & .user_nick {
+    .user_nick {
       margin-left: 8px;
       font-size: 14px;
       font-weight: bold;
     }
   }
 
-  & .comment_text {
+  .comment_text {
     padding-left: 38px;
     line-height: 20px;
   }
 
-  & .comment_footer {
+  .comment_footer {
     padding-left: 38px;
     margin-top: 5px;
 
-    & span {
+    span {
       font-size: 13px;
       margin-right: 5px;
     }

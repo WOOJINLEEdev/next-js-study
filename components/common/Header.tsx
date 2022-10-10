@@ -2,29 +2,21 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { atom, useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { HiMenu } from "react-icons/hi";
 import { GoSearch } from "react-icons/go";
 import { MdOutlineLightMode, MdDarkMode } from "react-icons/md";
-import { v1 } from "uuid";
 
 import { themeState, useTheme } from "hooks/useTheme";
 
 import { dark, light } from "styles/theme";
 
+import { menuClickState } from "state/menu";
+
 interface IHeaderProps {
   scrollState: boolean;
   cafeTitle: string;
 }
-
-interface IContainer {
-  showDivider: boolean;
-}
-
-export const menuClickState = atom<boolean>({
-  key: `menuClickState/${v1()}`,
-  default: false,
-});
 
 const Header = ({ scrollState, cafeTitle }: IHeaderProps) => {
   const router = useRouter();
@@ -98,7 +90,11 @@ const Header = ({ scrollState, cafeTitle }: IHeaderProps) => {
 
 export default Header;
 
-const Container = styled.header<IContainer>`
+interface IContainerProps {
+  showDivider: boolean;
+}
+
+const Container = styled.header<IContainerProps>`
   z-index: ${(props) => props.theme.zIndices[2]};
   position: sticky;
   top: 0;
@@ -113,7 +109,7 @@ const Container = styled.header<IContainer>`
   text-align: center;
   transition: ${(props) => props.theme.transitions[0]};
 
-  & .home_link {
+  .home_link {
     min-width: 79px;
     user-select: none;
   }
@@ -135,7 +131,7 @@ const ModeBtn = styled.button`
   height: 100%;
   color: ${(props) => props.theme.colors.titleColor};
 
-  & svg {
+  svg {
     width: 19px;
     height: 19px;
     margin: 16px 0;
@@ -146,7 +142,7 @@ const SearchBtn = styled.a`
   width: 38px;
   height: 100%;
 
-  & svg {
+  svg {
     width: 16px;
     height: 16px;
     margin: 17.5px 0;
@@ -158,7 +154,7 @@ const MenuBtn = styled.div`
   width: 46px;
   cursor: pointer;
 
-  & svg {
+  svg {
     width: 19px;
     height: 19px;
     margin: 16px 0;

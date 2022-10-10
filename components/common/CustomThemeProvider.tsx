@@ -1,26 +1,28 @@
 import styled, { ThemeProvider } from "styled-components";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { useEffect, useState } from "react";
+import { useRecoilState } from "recoil";
+import { useEffect, useState, ReactNode } from "react";
 
 import { useTheme } from "hooks/useTheme";
 
-import { IMenuWrap } from "components/common/Menu";
-import { menuClickState } from "components/common/Header";
+import { menuClickState } from "state/menu";
 
-const CustomThemeProvider: React.FC = ({ children }) => {
+interface ICustomThemeProviderProps {
+  children: ReactNode;
+}
+
+const CustomThemeProvider = ({ children }: ICustomThemeProviderProps) => {
   const themeMode = useTheme();
 
   const [mounted, setMounted] = useState(false);
 
-  const show = useRecoilValue(menuClickState);
-  const setMenuState = useSetRecoilState(menuClickState);
+  const [show, setShow] = useRecoilState(menuClickState);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
   const handleDimmedLayerClick = () => {
-    setMenuState(false);
+    setShow(false);
   };
 
   const provider = (
@@ -37,7 +39,11 @@ const CustomThemeProvider: React.FC = ({ children }) => {
 
 export default CustomThemeProvider;
 
-const DimmedLayer = styled.div<IMenuWrap>`
+interface IDimmedLayerProps {
+  show: boolean;
+}
+
+const DimmedLayer = styled.div<IDimmedLayerProps>`
   z-index: ${(props) => props.theme.zIndices[3]};
   position: fixed;
   top: 0;

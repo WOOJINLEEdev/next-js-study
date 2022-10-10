@@ -12,11 +12,11 @@ import {
 import { RecoilRoot } from "recoil";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 
-import { cafeTitle } from "pages";
 import CustomThemeProvider from "components/common/CustomThemeProvider";
 import DefaultLayout from "components/common/DefaultLayout";
 import GlobalStyle from "styles/global-styles";
 
+import { CAFE_TITLE } from "constant";
 import * as ga from "lib/ga";
 
 type NextPageWithLayout = NextPage & {
@@ -125,7 +125,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               {getLayout ? (
                 getLayout(<Component {...pageProps} />)
               ) : (
-                <DefaultLayout scrollState={scrollState} cafeTitle={cafeTitle}>
+                <DefaultLayout scrollState={scrollState} cafeTitle={CAFE_TITLE}>
                   <Component {...pageProps} />
                 </DefaultLayout>
               )}

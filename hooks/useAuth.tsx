@@ -1,36 +1,12 @@
-import { useSetRecoilState, atom, selector } from "recoil";
-import { v1 } from "uuid";
+import { useSetRecoilState } from "recoil";
 
 import authApi from "pages/api/auth";
+
+import { authState } from "state/auth";
 
 interface AuthResponse {
   data: string;
 }
-
-export const authState = atom({
-  key: `auth/${v1()}`,
-  default: {
-    token: "",
-  },
-});
-
-export const isLoginSelector = selector({
-  key: `auth/isLogin/${v1()}`,
-  get: ({ get }) => {
-    const auth = get(authState);
-
-    return Boolean(auth.token);
-  },
-});
-
-export const tokenSelector = selector({
-  key: `auth/token/${v1()}`,
-  get: ({ get }) => {
-    const auth = get(authState);
-
-    return auth.token;
-  },
-});
 
 export default function useAuth() {
   const setAuth = useSetRecoilState(authState);

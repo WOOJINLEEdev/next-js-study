@@ -61,33 +61,33 @@ const MenuMain = styled.div`
   padding: 20px;
   color: ${(props) => props.theme.colors.titleColor};
 
-  & .menu_main_title {
+  .menu_main_title {
     display: flex;
     justify-content: space-between;
     padding-bottom: 20px;
     cursor: pointer;
 
-    & svg {
+    svg {
       color: ${(props) => props.theme.colors.titleColor};
     }
   }
 
-  & .menu_main_list {
+  .menu_main_list {
     max-height: 288px;
     overflow: hidden;
     transition: ${(props) => props.theme.transitions[1]};
 
-    & li {
+    li {
       padding: 10px 0;
     }
   }
 
-  & .hide {
+  .hide {
     max-height: 0;
     overflow: hidden;
     transition: ${(props) => props.theme.transitions[1]};
 
-    & li {
+    li {
       padding: 10px 0;
     }
   }

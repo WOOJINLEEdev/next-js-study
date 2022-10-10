@@ -36,43 +36,43 @@ const Container = styled.footer`
   background: ${(props) => props.theme.colors.bgColor};
   transition: ${(props) => props.theme.transitions[0]};
 
-  & .footer_list {
+  .footer_list {
     display: table;
     padding: 15px 0;
     margin: 0 auto;
   }
 
-  & .footer_list:after {
+  .footer_list:after {
     display: block;
     clear: both;
     content: "";
   }
 
-  & .footer_item {
+  .footer_item {
     float: left;
   }
 
-  & .footer_item + .footer_item {
+  .footer_item + .footer_item {
     padding-left: 10px;
   }
 
-  & .footer_link {
+  .footer_link {
     text-decoration: none;
     color: #333;
   }
 
-  & .footer_address {
+  .footer_address {
     text-align: center;
     padding-bottom: 10px;
   }
 
-  & .footer_copyright {
+  .footer_copyright {
     display: table;
     padding-bottom: 15px;
     margin: 0 auto;
   }
 
-  & .footer_copyright_text {
+  .footer_copyright_text {
     padding-right: 5px;
     font-weight: bold;
   }

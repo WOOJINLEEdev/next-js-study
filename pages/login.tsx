@@ -223,7 +223,7 @@ const Container = styled.div`
   background: ${(props) => props.theme.colors.bgColor};
   transition: ${(props) => props.theme.transitions[0]};
 
-  & h2 {
+  h2 {
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
@@ -241,7 +241,7 @@ const Wrapper = styled.div`
   padding: 20px;
   margin: 0 auto;
 
-  & #naverIdLogin {
+  #naverIdLogin {
     display: none;
   }
 `;
@@ -250,7 +250,7 @@ const Form = styled.form`
   position: relative;
   padding: 20px 0;
 
-  & .password_icon,
+  .password_icon,
   .user_id_icon {
     position: absolute;
     top: 0;
@@ -258,13 +258,13 @@ const Form = styled.form`
     padding: 16px;
     max-height: 52px;
 
-    & svg {
+    svg {
       min-width: 20px;
       min-height: 20px;
     }
   }
 
-  & .item_area {
+  .item_area {
     position: relative;
     display: block;
     height: 53px;
@@ -275,14 +275,14 @@ const Form = styled.form`
     border: 2px solid #e6e6ea;
   }
 
-  & .id,
+  .id,
   .id_focus {
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
   }
 
-  & .id_focus,
-  & .password_focus {
+  .id_focus,
+  .password_focus {
     position: relative;
     display: block;
     height: 53px;
@@ -291,18 +291,18 @@ const Form = styled.form`
     border: 2px solid #03c75a;
   }
 
-  & .id_focus {
+  .id_focus {
     border-bottom: 2px solid #e6e6ea;
   }
 
-  & .password,
+  .password,
   .password_focus {
     border-top: 0;
     border-bottom-left-radius: 6px;
     border-bottom-right-radius: 6px;
   }
 
-  & .user_id,
+  .user_id,
   .user_password {
     position: relative;
     display: block;
@@ -314,7 +314,7 @@ const Form = styled.form`
     user-select: none;
   }
 
-  & .login_btn {
+  .login_btn {
     display: block;
     width: 100%;
     margin-top: 14px;
@@ -351,7 +351,7 @@ const RemoveBtn = styled.button`
   color: ${(props) => props.theme.colors.titleColor};
   cursor: pointer;
 
-  & svg {
+  svg {
     width: 20px;
     height: 20px;
   }

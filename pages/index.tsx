@@ -1,86 +1,25 @@
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetStaticProps } from "next";
 import Link from "next/link";
 import Head from "next/head";
-import axios from "axios";
 import styled from "styled-components";
-import { selectorFamily, useRecoilValue } from "recoil";
-import { dehydrate, QueryClient, useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
+import { dehydrate, QueryClient } from "react-query";
 import { AiOutlineUserAdd, AiOutlineUser } from "react-icons/ai";
-import { v1 } from "uuid";
 
-import { tokenSelector } from "hooks/useAuth";
+import { getPostList, getUrl, useGetPostList } from "hooks/api/useGetPostList";
 import { formatDate } from "utils/format-date";
 
-import { commentCountSelector } from "pages/posts/[id]/comments";
+import { commentCountsSelector } from "state/comment";
+import { tokenSelector } from "state/auth";
+import { ICommentCount, IPostItem } from "types";
+import { CAFE_TITLE, TABS } from "constant";
 
 interface IHomeProps {
   activeTab: string;
 }
 
-export interface IPostItem {
-  id: number;
-  userId: number;
-  title: string;
-  body: string;
-}
-
-interface ICommentCount {
-  postId: number;
-  total: number;
-}
-
-const Tabs = {
-  ALL: "",
-  POPULAR: "popular",
-  NOTICE: "notice",
-};
-
-const TABS = [
-  {
-    key: Tabs.ALL,
-    value: "0",
-    name: "전체글",
-    path: "/",
-  },
-  {
-    key: Tabs.POPULAR,
-    value: "1",
-    name: "인기글",
-    path: "/",
-  },
-  {
-    key: Tabs.NOTICE,
-    value: "2",
-    name: "전체공지",
-    path: "/",
-  },
-];
-
-export const commentCountsSelector = selectorFamily({
-  key: `commentCountsSelector/${v1()}`,
-  get:
-    (postIdList: number[]) =>
-    ({ get }) => {
-      return postIdList.map((postId: number) => {
-        const commentsLength = get(commentCountSelector(postId));
-
-        return {
-          postId,
-          total: commentsLength,
-        };
-      });
-    },
-});
-
-export const cafeTitle = "WOOJINLEEdev Cafe";
-
 const Home = ({ activeTab }: IHomeProps) => {
-  const { data: postList } = useQuery<
-    IPostItem[],
-    unknown,
-    IPostItem[],
-    string
-  >(getUrl(activeTab), getPostList);
+  const { postList } = useGetPostList({ activeTab });
 
   const now = new Date();
   const yymmdd = formatDate(now, "YY.MM.DD");
@@ -93,7 +32,7 @@ const Home = ({ activeTab }: IHomeProps) => {
   const commentCounts = useRecoilValue<ICommentCount[]>(
     commentCountsSelector(idList),
   );
-  const token = useRecoilValue<string>(tokenSelector);
+  const token = useRecoilValue(tokenSelector);
 
   return (
     <>
@@ -114,7 +53,7 @@ const Home = ({ activeTab }: IHomeProps) => {
             </Link>
             <div className="info_text">
               <Link href="/" passHref>
-                <h1 className="info_title">{cafeTitle}</h1>
+                <h1 className="info_title">{CAFE_TITLE}</h1>
               </Link>
 
               <div className="info_content">
@@ -204,25 +143,10 @@ const Home = ({ activeTab }: IHomeProps) => {
   );
 };
 
-function getPostList({ queryKey }: { queryKey: string[] }) {
-  return axios.get<IPostItem[]>(queryKey[0]).then((res) => res.data);
-}
-
-function getUrl(tab?: string | string[]) {
-  let url = "https://jsonplaceholder.typicode.com/posts";
-  switch (tab) {
-    case Tabs.POPULAR:
-      url += "?userId=10";
-      break;
-    case Tabs.NOTICE:
-      url += "?userId=5";
-      break;
-  }
-
-  return url;
-}
-
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  res,
+  query,
+}) => {
   const queryClient = new QueryClient();
 
   const { tab } = query;
@@ -230,6 +154,14 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   await queryClient.prefetchQuery<IPostItem[], unknown, IPostItem[], string>(
     getUrl(tab),
     getPostList,
+  );
+
+  res.setHeader(
+    "Cache-Control",
+
+    process.env.NODE_ENV === "production"
+      ? "public, s-maxage=604800, stale-while-revalidate=86400"
+      : "no-cache, no-store, max-age=0, must-revalidate",
   );
 
   return {
@@ -287,7 +219,7 @@ const Section = styled.section`
     height: 340px;
   }
 
-  & .info {
+  .info {
     z-index: ${(props) => props.theme.zIndices[1]};
     position: absolute;
     left: 0;
@@ -302,7 +234,7 @@ const Section = styled.section`
     box-sizing: border-box;
   }
 
-  & .cafe_img {
+  .cafe_img {
     display: table-cell;
     margin: 0 0 0 -1px;
     vertical-align: bottom;
@@ -313,14 +245,14 @@ const Section = styled.section`
     border-radius: 5px;
   }
 
-  & .info_text {
+  .info_text {
     width: 100%;
     margin-left: 8px;
     font-size: 13px;
     color: ${(props) => props.theme.colors.titleColor};
   }
 
-  & .info_title {
+  .info_title {
     padding-top: 6px;
     font-size: 20px;
     line-height: 24px;
@@ -331,16 +263,16 @@ const Section = styled.section`
     cursor: pointer;
   }
 
-  & .info_link {
+  .info_link {
     margin-left: 10px;
   }
 
-  & .info_content {
+  .info_content {
     padding-top: 4px;
     height: 21.5px;
   }
 
-  & .info_popular {
+  .info_popular {
     width: 20px;
     height: 18px;
     padding: 1px 2px;
@@ -376,12 +308,12 @@ const ListItem = styled.li`
     padding-bottom: 22px;
   }
 
-  & .post_info {
+  .post_info {
     width: 100%;
     cursor: pointer;
   }
 
-  & .list_title {
+  .list_title {
     width: 100%;
     height: 34px;
     padding-right: 10px;
@@ -392,7 +324,7 @@ const ListItem = styled.li`
     -webkit-box-orient: vertical;
   }
 
-  & .list_img {
+  .list_img {
     display: table-cell;
     margin: 0 0 0 -1px;
     vertical-align: bottom;
@@ -402,7 +334,7 @@ const ListItem = styled.li`
     border-radius: 5px;
   }
 
-  & .list_comment {
+  .list_comment {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -414,35 +346,35 @@ const ListItem = styled.li`
     color: #333;
     cursor: pointer;
 
-    & span {
+    span {
       font-size: 10px;
-    }
 
-    & span:first-child {
-      font-size: 12px;
-      font-weight: bold;
-      margin-bottom: 3px;
+      &:first-child {
+        font-size: 12px;
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
     }
   }
 
-  & .list_img_comment_wrapper {
+  .list_img_comment_wrapper {
     display: flex;
     justify-content: space-between;
     min-width: 95px;
     max-width: 100px;
   }
 
-  & .user_area {
+  .user_area {
     margin-top: 10px;
     color: #979797;
     font-size: 12px;
 
-    & span {
+    span {
       margin-left: 8px;
-    }
 
-    & span:first-child {
-      margin: 0;
+      &:first-child {
+        margin: 0;
+      }
     }
   }
 `;
@@ -463,32 +395,32 @@ const TabBox = styled.div`
   transition: ${(props) => props.theme.transitions[0]};
   border-bottom: 1px solid #e6e6e6;
 
-  & ul {
+  ul {
     display: flex;
     width: 70%;
     line-height: 48px;
     text-align: center;
 
-    & li {
+    li {
       margin-left: 10px;
 
-      & a {
+      &:first-child {
+        margin: 0;
+      }
+
+      a {
         padding: 13px 0;
         color: ${(props) => props.theme.colors.titleColor};
       }
     }
 
-    & li:first-child {
-      margin: 0;
-    }
-
-    & .is_active {
+    .is_active {
       color: ${(props) => props.theme.colors.titleColor};
       border-bottom: ${(props) => props.theme.colors.tabBorderColor};
     }
   }
 
-  & .join_btn {
+  .join_btn {
     display: flex;
     justify-content: center;
     width: 100px;
@@ -502,7 +434,7 @@ const TabBox = styled.div`
     font-weight: bold;
     padding: 0;
 
-    & svg {
+    svg {
       width: 19px;
       height: 19px;
       margin: 5px 0;

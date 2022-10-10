@@ -5,8 +5,10 @@ import { useRecoilValue } from "recoil";
 
 import { formatDate } from "utils/format-date";
 
-import { IMyComment, myCommentsState } from "pages/posts/[id]/comments";
 import MyProfileLayout from "components/myprofile/MyProfileLayout";
+
+import { myCommentsState } from "state/comment";
+import { IMyComment } from "types";
 
 const MyComments = () => {
   const now = new Date();
@@ -74,11 +76,11 @@ const ListItem = styled.li`
     padding-bottom: 25px;
   }
 
-  & .post_info {
+  .post_info {
     width: 100%;
     cursor: pointer;
 
-    & .post_title {
+    .post_title {
       display: -webkit-box;
       overflow: hidden;
       padding-top: 7px;
@@ -91,7 +93,7 @@ const ListItem = styled.li`
     }
   }
 
-  & .list_title {
+  .list_title {
     width: 100%;
     height: 20px;
     padding-right: 10px;
@@ -102,7 +104,7 @@ const ListItem = styled.li`
     -webkit-box-orient: vertical;
   }
 
-  & .date {
+  .date {
     padding-top: 7px;
     font-size: 12px;
     color: #979797;
