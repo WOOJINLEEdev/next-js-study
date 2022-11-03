@@ -14,7 +14,7 @@ import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 
 import CustomThemeProvider from "components/common/CustomThemeProvider";
 import DefaultLayout from "components/common/DefaultLayout";
-import GlobalStyle from "styles/global-styles";
+import GlobalStyle from "styles/GlobalStyle";
 
 import { CAFE_TITLE } from "constant";
 import * as ga from "lib/ga";
@@ -23,14 +23,25 @@ type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
-type AppPropsWithLayout = AppProps & {
+type AppPropsWithLayout = AppProps<any> & {
   Component: NextPageWithLayout;
 };
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter();
   const [scrollState, setScrollState] = useState(false);
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            refetchOnWindowFocus: false,
+            refetchOnMount: false,
+            staleTime: Infinity,
+          },
+        },
+      }),
+  );
 
   const handleScrollY = useCallback(() => {
     const scrollY = window.scrollY;

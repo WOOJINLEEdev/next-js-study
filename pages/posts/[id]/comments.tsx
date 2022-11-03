@@ -1,5 +1,8 @@
 import Link from "next/link";
+import { GetStaticPropsContext } from "next";
 import { useRouter } from "next/router";
+import axios from "axios";
+import { dehydrate, QueryClient } from "react-query";
 import { useState, useRef, useEffect, ReactElement, ChangeEvent } from "react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
@@ -19,9 +22,9 @@ import {
   commentsState,
   myCommentsState,
 } from "state/comment";
-import { CAFE_TITLE } from "constant";
-import { IMyComment, IPostItem } from "types";
 import { tokenSelector } from "state/auth";
+import { IMyComment, IPostItem } from "types";
+import { CAFE_TITLE } from "constant";
 
 const Comments = () => {
   const [value, setValue] = useState("");
@@ -169,6 +172,28 @@ const Comments = () => {
     </Container>
   );
 };
+
+export async function getStaticPaths() {
+  return { paths: [], fallback: true };
+}
+
+export async function getStaticProps({ params }: GetStaticPropsContext) {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery(["post", params?.id], async () => {
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/posts/${params?.id}`,
+    );
+
+    return res.data;
+  });
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+}
 
 export default Comments;
 
