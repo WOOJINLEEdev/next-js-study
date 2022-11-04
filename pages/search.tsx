@@ -16,14 +16,14 @@ const Search = () => {
   return (
     <>
       <SearchBar className="search_bar">
-        <a
-          role="button"
+        <button
+          type="button"
           className="search_btn_prev"
           onClick={handlePrevBtnClick}
+          aria-label="이전 페이지로 돌아가기"
         >
           <MdOutlineKeyboardArrowLeft />
-          <span className="visually_hidden">이전 페이지로 돌아가기</span>
-        </a>
+        </button>
 
         <SearchForm />
       </SearchBar>
@@ -56,6 +56,8 @@ const SearchBar = styled.div`
   background-color: rgb(136, 136, 136);
 
   .search_btn_prev {
+    padding: 0;
+
     svg {
       width: 41px;
       height: 41px;

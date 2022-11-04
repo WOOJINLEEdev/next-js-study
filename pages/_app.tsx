@@ -12,6 +12,8 @@ import {
 import { RecoilRoot } from "recoil";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 
+import { useScrollRestoration } from "hooks/useScrollRestoration";
+
 import CustomThemeProvider from "components/common/CustomThemeProvider";
 import DefaultLayout from "components/common/DefaultLayout";
 import GlobalStyle from "styles/GlobalStyle";
@@ -29,6 +31,8 @@ type AppPropsWithLayout = AppProps<any> & {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const router = useRouter();
+  useScrollRestoration(router);
+
   const [scrollState, setScrollState] = useState(false);
   const [queryClient] = useState(
     () =>
