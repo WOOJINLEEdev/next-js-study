@@ -12,6 +12,7 @@ import { themeState, useTheme } from "hooks/useTheme";
 import { dark, light } from "styles/theme";
 
 import { menuClickState } from "state/menu";
+import { inter } from "pages";
 
 interface IHeaderProps {
   scrollState: boolean;
@@ -50,13 +51,13 @@ const Header = ({ scrollState, cafeTitle }: IHeaderProps) => {
   };
 
   return (
-    <Container showDivider={showDivider}>
-      <Link href="/">
-        <a className="home_link">cafe</a>
+    <Container showDivider={showDivider} className={inter.className}>
+      <Link href="/" className="home_link">
+        cafe
       </Link>
 
-      <Link href="/" passHref>
-        <Title tabIndex={0}>{title}</Title>
+      <Link href="/" className="header_title">
+        {title}
       </Link>
 
       <BtnWrapper>
@@ -70,18 +71,17 @@ const Header = ({ scrollState, cafeTitle }: IHeaderProps) => {
         <Link href="/search" passHref>
           <SearchBtn role="button" aria-label="검색 버튼">
             <GoSearch />
-            <span className="visually_hidden">검색 버튼</span>
           </SearchBtn>
         </Link>
         <MenuBtn
           role="button"
           id="menu_button"
           aria-haspopup="true"
+          aria-label="메뉴 버튼"
           onClick={handleMenuClick}
           tabIndex={0}
         >
           <HiMenu />
-          <span className="visually_hidden">메뉴 버튼</span>
         </MenuBtn>
       </BtnWrapper>
     </Container>
@@ -113,17 +113,17 @@ const Container = styled.header<IContainerProps>`
     min-width: 79px;
     user-select: none;
   }
-`;
 
-const Title = styled.h1`
-  min-width: calc(100% - 238.05px);
-  height: 100%;
-  font-weight: bold;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  user-select: none;
-  cursor: pointer;
+  .header_title {
+    min-width: calc(100% - 238.05px);
+    height: 100%;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    user-select: none;
+    cursor: pointer;
+  }
 `;
 
 const ModeBtn = styled.button`
@@ -138,7 +138,7 @@ const ModeBtn = styled.button`
   }
 `;
 
-const SearchBtn = styled.a`
+const SearchBtn = styled.div`
   width: 38px;
   height: 100%;
 

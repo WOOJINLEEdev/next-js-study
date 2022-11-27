@@ -1,10 +1,11 @@
-import { GetServerSideProps, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Link from "next/link";
 import Head from "next/head";
 import styled from "styled-components";
 import { useRecoilValue } from "recoil";
 import { dehydrate, QueryClient } from "react-query";
 import { AiOutlineUserAdd, AiOutlineUser } from "react-icons/ai";
+import { Inter } from "@next/font/google";
 
 import { getPostList, getUrl, useGetPostList } from "hooks/api/useGetPostList";
 import { formatDate } from "utils/format-date";
@@ -13,6 +14,12 @@ import { commentCountsSelector } from "state/comment";
 import { tokenSelector } from "state/auth";
 import { ICommentCount, IPostItem } from "types";
 import { CAFE_TITLE, TABS } from "constant";
+
+export const inter = Inter({
+  weight: ["400", "700"],
+  style: ["normal"],
+  subsets: ["latin"],
+});
 
 interface IHomeProps {
   activeTab: string;
@@ -46,22 +53,20 @@ const Home = ({ activeTab }: IHomeProps) => {
       <Container>
         <Section>
           <div className="info">
-            <Link href="/">
-              <a className="cafe_img">
-                <span className="visually_hidden">cafe 이미지</span>
-              </a>
-            </Link>
+            <Link href="/" className="cafe_img" aria-label="cafe 이미지"></Link>
             <div className="info_text">
               <Link href="/" passHref>
-                <h1 className="info_title">{CAFE_TITLE}</h1>
+                <h1 className={`info_title ${inter.className}`}>
+                  {CAFE_TITLE}
+                </h1>
               </Link>
 
               <div className="info_content">
                 <span className="info_memeber">
                   멤버수 <em>1</em>
                 </span>
-                <Link href="/">
-                  <a className="info_link">카페정보 &gt;</a>
+                <Link href="/" className="info_link">
+                  카페정보 &gt;
                 </Link>
                 <span className="info_popular">대표</span>
               </div>
@@ -82,17 +87,23 @@ const Home = ({ activeTab }: IHomeProps) => {
                     pathname: tab.path,
                     query: tab.key && { tab: tab.key },
                   }}
+                  className="tab_link"
                 >
-                  <a className="tab_link">{tab.name}</a>
+                  {tab.name}
                 </Link>
               </li>
             ))}
           </ul>
-          <Link href={token ? "/myprofile/articles" : "/login"}>
-            <a className="join_btn">
+          <Link
+            href={token ? "/myprofile/articles" : "/login"}
+            className="join_btn"
+            role="button"
+            passHref
+          >
+            <>
               {token ? <AiOutlineUser /> : <AiOutlineUserAdd />}
               <span>{token ? "마이프로필" : "가입하기"}</span>
-            </a>
+            </>
           </Link>
         </TabBox>
 
@@ -100,8 +111,14 @@ const Home = ({ activeTab }: IHomeProps) => {
           {postList?.map((value: IPostItem) => {
             return (
               <ListItem key={String(value.id)}>
-                <Link href="/posts/[id]" as={`/posts/${value.id}`} passHref>
-                  <a className="post_info" tabIndex={0}>
+                <Link
+                  href="/posts/[id]"
+                  as={`/posts/${value.id}`}
+                  className={`post_info ${inter.className}`}
+                  tabIndex={0}
+                  passHref
+                >
+                  <>
                     <strong className="list_title" key={String(value.id)}>
                       {value.title}
                     </strong>
@@ -113,16 +130,18 @@ const Home = ({ activeTab }: IHomeProps) => {
                         조회 <span>{value.id}</span>
                       </span>
                     </div>
-                  </a>
+                  </>
                 </Link>
                 <div className="list_img_comment_wrapper">
                   <div className="list_img"></div>
                   <Link
                     href="/posts/[id]/comments"
                     as={`/posts/${value.id}/comments`}
+                    className="list_comment"
+                    tabIndex={0}
                     passHref
                   >
-                    <a className="list_comment" tabIndex={0}>
+                    <>
                       <span>
                         {commentCounts.map(
                           (commentCount) =>
@@ -131,7 +150,7 @@ const Home = ({ activeTab }: IHomeProps) => {
                         )}
                       </span>
                       <span>댓글</span>
-                    </a>
+                    </>
                   </Link>
                 </div>
               </ListItem>

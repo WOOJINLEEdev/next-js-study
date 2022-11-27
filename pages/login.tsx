@@ -1,214 +1,57 @@
-import { useRouter } from "next/router";
-import Script from "next/script";
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import styled from "styled-components";
-import { IoIosCloseCircle } from "react-icons/io";
-import { AiOutlineUser, AiOutlineLock } from "react-icons/ai";
 
-import useAuth from "hooks/useAuth";
+const OAUTH = ["google", "naver", "kakao", "github", "facebook"];
 
 const Login = () => {
-  const { naver }: any = typeof window !== "undefined" && window;
-  const router = useRouter();
+  const { data: session, status } = useSession();
 
-  const [naverIdToken, setNaverIdToken] = useState<string>("");
-  const [id, setId] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [idClassName, setIdClassName] = useState<string>("item_area id");
-  const [passwordClassName, setPasswordClassName] =
-    useState<string>("item_area password");
-
-  const idRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-
-  const auth = useAuth();
-
-  useEffect(() => {
-    initializeNaverLogin();
-    location.href.includes("access_token") && getNaverToken();
-  }, []);
-
-  const initializeNaverLogin = () => {
-    const naverLogin = new naver.LoginWithNaverId({
-      clientId: process.env.NEXT_PUBLIC_NAVER_CLIENT_ID,
-      callbackUrl: process.env.NEXT_PUBLIC_NAVER_CALLBACK_URL,
-      isPopup: false,
-      loginButton: { color: "#008000", type: 3, height: 60 },
-      callbackHandle: true,
-    });
-    naverLogin.init();
-  };
-
-  const getNaverToken = () => {
-    const naverToken = window.location.href.split("=")[1].split("&")[0];
-    setNaverIdToken(naverToken);
-  };
-
-  const handleNaverLoginBtnClick = () => {
-    const naverLoginButton = document.getElementById(
-      "naverIdLogin_loginButton",
-    );
-    if (naverLoginButton) naverLoginButton.click();
-  };
-
-  const handleRemoveBtnClick = (value: string) => {
-    value === "id" && setId("");
-    value === "password" && setPassword("");
-  };
-
-  const handleIdChnage = (e: ChangeEvent<HTMLInputElement>) => {
-    const targetValue = e.currentTarget.value;
-    setId(targetValue);
-  };
-
-  const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.currentTarget.value);
-  };
-
-  const handleIdFocus = () => {
-    idRef?.current && setIdClassName("id_focus");
-  };
-
-  const handleIdBlur = () => {
-    idRef?.current && setIdClassName("item_area id");
-  };
-
-  const handlePasswordFocus = () => {
-    passwordRef?.current && setPasswordClassName("password_focus");
-  };
-
-  const handlePasswordBlur = () => {
-    passwordRef?.current && setPasswordClassName("item_area password");
-  };
-
-  async function handleFormSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-
-    login(e.currentTarget);
-  }
-
-  async function login(form: HTMLFormElement | null) {
-    if (form === null) {
-      return false;
+  function capitalizeFirstLetter(string: string) {
+    switch (string) {
+      case "google":
+        return "구글";
+      case "naver":
+        return "네이버";
+      case "kakao":
+        return "카카오";
     }
-
-    const formData = new FormData(form);
-    const userId = formData.get("userId") as string;
-    const userPassword = formData.get("userPassword") as string;
-
-    if (userId === "" || userId.trim().length === 0) {
-      alert("아이디를 입력해주세요.");
-      idRef?.current?.focus();
-      return false;
-    }
-
-    if (userPassword === "") {
-      alert("비밀번호를 입력해주세요.");
-      passwordRef?.current?.focus();
-      return false;
-    }
-
-    try {
-      await auth.login(userId, userPassword);
-      router.replace("/");
-    } catch (error) {
-      console.error(error);
-    }
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   return (
     <>
       <Container>
         <Wrapper>
-          <h2>* 아이디는 영문 및 숫자만 입력 가능합니다.</h2>
-          <Form onSubmit={handleFormSubmit}>
-            <div className={idClassName}>
-              <div className="user_id_icon">
-                <AiOutlineUser />
-              </div>
-              <label htmlFor="userId" className="visually_hidden">
-                아이디
-              </label>
-              <input
-                type="text"
-                id="userId"
-                name="userId"
-                className="user_id"
-                value={id}
-                onChange={handleIdChnage}
-                onFocus={handleIdFocus}
-                onBlur={handleIdBlur}
-                ref={idRef}
-                placeholder="아이디"
-                autoComplete="on"
-              />
-              {id.length > 0 && (
-                <RemoveBtn
-                  type="button"
-                  onClick={() => handleRemoveBtnClick("id")}
-                  aria-label="Id Delete"
-                >
-                  <IoIosCloseCircle />
-                </RemoveBtn>
-              )}
-            </div>
+          {session?.user?.email ? (
+            ""
+          ) : (
+            <ul>
+              {OAUTH.map((item) => {
+                return (
+                  <li key={`oauth_item_${item}`} className="oauth_item">
+                    <button
+                      type="button"
+                      className={`oauth_btn ${item}`}
+                      onClick={() => signIn(item)}
+                      value={`${item} 로그인`}
+                    >
+                      <span className="oauth_btn_text">
+                        {capitalizeFirstLetter(item)} 로그인
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
 
-            <div className={passwordClassName}>
-              <div className="password_icon">
-                <AiOutlineLock />
-              </div>
-              <label htmlFor="userPassword" className="visually_hidden">
-                비밀번호
-              </label>
-              <input
-                type="password"
-                id="userPassword"
-                name="userPassword"
-                className="user_password"
-                value={password}
-                onChange={handlePasswordChange}
-                onFocus={handlePasswordFocus}
-                onBlur={handlePasswordBlur}
-                ref={passwordRef}
-                autoComplete="new-password"
-                maxLength={16}
-                placeholder="비밀번호"
-              />
-              {password.length > 0 && (
-                <RemoveBtn
-                  type="button"
-                  onClick={() => handleRemoveBtnClick("password")}
-                  aria-label="Password Delete"
-                >
-                  <IoIosCloseCircle />
-                </RemoveBtn>
-              )}
-            </div>
-            <button type="submit" className="login_btn">
-              로그인
+          {session?.user?.email && (
+            <button type="button" onClick={() => signOut()}>
+              로그아웃
             </button>
-          </Form>
-
-          <div>
-            <NaverLoginBtn
-              type="button"
-              onClick={handleNaverLoginBtnClick}
-              aria-label="네이버 아이디로 로그인"
-            />
-            <div
-              id="naverIdLogin"
-              onClick={initializeNaverLogin}
-              role="button"
-            />
-          </div>
+          )}
         </Wrapper>
       </Container>
-
-      <Script
-        type="text/javascript"
-        src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2-nopolyfill.js"
-        strategy="beforeInteractive"
-      />
     </>
   );
 };
@@ -243,6 +86,76 @@ const Wrapper = styled.div`
 
   #naverIdLogin {
     display: none;
+  }
+
+  .oauth_item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  .oauth_btn {
+    position: relative;
+    align-items: center;
+    width: 200px;
+    height: 50px;
+    padding: 10px;
+    color: #000000;
+    font-size: 15px;
+    font-weight: bold;
+    border-radius: 12px;
+    box-shadow: rgb(0 0 0 / 24%) 0px 2px 2px 0px,
+      rgb(0 0 0 / 24%) 0px 0px 1px 0px;
+
+    .oauth_btn_text {
+      position: absolute;
+      display: inline-block;
+      top: 15px;
+      left: 60px;
+      width: 120px;
+      height: 20px;
+      text-align: left;
+    }
+
+    &.google {
+      background: url("/images/google-logo.png") no-repeat left;
+      background-size: 20px 20px;
+      background-color: #ffffff;
+      background-position: 10px;
+    }
+
+    &.naver {
+      background: url("/images/naver-icon1.png") no-repeat left;
+      background-size: 20px 20px;
+      background-color: #03c75a;
+      background-position: 10px;
+      color: #ffffff;
+    }
+
+    &.kakao {
+      background: url("/images/kakao-symbol.png") no-repeat left;
+      background-size: 20px 20px;
+      background-color: #fee500;
+      background-position: 10px;
+      color: rgba(0, 0, 0, 0.85);
+    }
+
+    &.github {
+      background: url("/images/GitHub-Mark-Light-32px.png") no-repeat left;
+      background-color: #000000;
+      background-size: 20px 20px;
+      background-position: 10px;
+      color: #ffffff;
+    }
+
+    &.facebook {
+      background: url("/images/facebook-dark.svg") no-repeat left;
+      background-color: #3578e5;
+      background-size: 20px 20px;
+      background-position: 10px;
+      color: #ffffff;
+    }
   }
 `;
 
@@ -327,32 +240,5 @@ const Form = styled.form`
     font-weight: 700;
     color: #fff;
     user-select: none;
-  }
-`;
-
-const NaverLoginBtn = styled.button`
-  display: block;
-  width: 100%;
-  height: 54px;
-  border: ${(props) => props.theme.colors.borderColor};
-  background: url("/images/naver_id_login.png") no-repeat;
-  background-position: center;
-  background-size: 200px 54px;
-  background-color: #fff;
-  border-radius: 6px;
-`;
-
-const RemoveBtn = styled.button`
-  position: absolute;
-  max-height: 52px;
-  top: 0;
-  right: 0;
-  padding: 16px;
-  color: ${(props) => props.theme.colors.titleColor};
-  cursor: pointer;
-
-  svg {
-    width: 20px;
-    height: 20px;
   }
 `;

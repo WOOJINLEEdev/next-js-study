@@ -11,6 +11,7 @@ import {
 } from "react";
 import { RecoilRoot } from "recoil";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
+import { SessionProvider } from "next-auth/react";
 
 import { useScrollRestoration } from "hooks/useScrollRestoration";
 
@@ -29,7 +30,10 @@ type AppPropsWithLayout = AppProps<any> & {
   Component: NextPageWithLayout;
 };
 
-function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+function MyApp({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppPropsWithLayout) {
   const router = useRouter();
   useScrollRestoration(router);
 
@@ -135,16 +139,21 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
               <link rel="icon" href="/favicon-wj.ico" />
               <title>WOOJINLEEdev Cafe</title>
             </Head>
-            <CustomThemeProvider>
-              <GlobalStyle />
-              {getLayout ? (
-                getLayout(<Component {...pageProps} />)
-              ) : (
-                <DefaultLayout scrollState={scrollState} cafeTitle={CAFE_TITLE}>
-                  <Component {...pageProps} />
-                </DefaultLayout>
-              )}
-            </CustomThemeProvider>
+            <SessionProvider session={session}>
+              <CustomThemeProvider>
+                <GlobalStyle />
+                {getLayout ? (
+                  getLayout(<Component {...pageProps} />)
+                ) : (
+                  <DefaultLayout
+                    scrollState={scrollState}
+                    cafeTitle={CAFE_TITLE}
+                  >
+                    <Component {...pageProps} />
+                  </DefaultLayout>
+                )}
+              </CustomThemeProvider>
+            </SessionProvider>
           </RecoilRoot>
         </Hydrate>
       </QueryClientProvider>

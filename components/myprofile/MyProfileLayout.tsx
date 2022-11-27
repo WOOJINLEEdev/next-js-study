@@ -71,8 +71,8 @@ const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
       ) : (
         <>
           <ProfileHead>
-            <Link href="/login">
-              <a className="user_login_link">로그인 해주세요.</a>
+            <Link href="/login" className="user_login_link">
+              로그인 해주세요.
             </Link>
 
             <div className="user_photo">

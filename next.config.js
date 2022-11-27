@@ -3,7 +3,15 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   compiler: {
-    styledComponents: true,
+    styledComponents: {
+      ssr: true,
+      displayName: true,
+    },
+  },
+  experimental: {
+    fontLoaders: [
+      { loader: "@next/font/google", options: { subsets: ["latin"] } },
+    ],
   },
 };
 

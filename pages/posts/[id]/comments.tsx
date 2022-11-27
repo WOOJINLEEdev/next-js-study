@@ -15,6 +15,7 @@ import { FaRegCommentDots } from "react-icons/fa";
 import useGetPostItem from "hooks/api/useGetPostItem";
 import { formatDate } from "utils/format-date";
 
+import { inter } from "pages";
 import Footer from "components/common/Footer";
 
 import {
@@ -84,27 +85,32 @@ const Comments = () => {
     <Container>
       <CommentHeader>
         <div className="comment_header_wrap">
-          <a
-            role="button"
+          <button
+            type="button"
             className="search_btn_prev"
             onClick={handlePrevBtnClick}
             aria-label="이전 페이지로 돌아가기"
           >
             <MdOutlineKeyboardArrowLeft />
-          </a>
+          </button>
           <div className="title_area">
             <h1>댓글 {commentsLength}</h1>
-            <h2>{CAFE_TITLE}</h2>
+            <h2 className={inter.className}>{CAFE_TITLE}</h2>
           </div>
         </div>
       </CommentHeader>
 
       <div className="post_link_wrap">
-        <Link href="/posts/[id]" as={`/posts/${post.id}`}>
-          <a className="post_link">
-            <h3 className="post_title">{post.title}</h3>
+        <Link
+          href="/posts/[id]"
+          as={`/posts/${post.id}`}
+          className="post_link"
+          passHref
+        >
+          <>
+            <h3 className={`post_title ${inter.className}`}>{post.title}</h3>
             <MdOutlineKeyboardArrowRight />
-          </a>
+          </>
         </Link>
       </div>
 
@@ -143,13 +149,13 @@ const Comments = () => {
             {comments.map((comment: string) => (
               <CommentItem key={comment}>
                 <div className="comment_header">
-                  <Link href="#">
-                    <a className="user_link">
+                  <Link href="#" className="user_link" passHref>
+                    <>
                       <span className="user_image"></span>
                       <span className="user_nick">
                         {token ? `${token}` : "-"}
                       </span>
-                    </a>
+                    </>
                   </Link>
                 </div>
                 <p className="comment_text">{comment}</p>

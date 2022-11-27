@@ -35,25 +35,24 @@ const Menu = () => {
         <div className="user_area">
           {token ? (
             <>
-              <Link href="/myprofile/articles">
-                <a className="user_photo">
-                  <span className="visually_hidden">사용자 사진</span>
-                </a>
-              </Link>
-              <Link href="/myprofile/articles">
-                <a className="user_id">{token}</a>
+              <Link
+                href="/myprofile/articles"
+                className="user_photo"
+                passHref
+                aria-label="사용자 사진"
+              ></Link>
+              <Link href="/myprofile/articles" className="user_id">
+                {token}
               </Link>
             </>
           ) : (
             <>
-              <Link href="/login">
-                <a className="user_photo">
-                  <span className="visually_hidden">사용자 사진</span>
-                </a>
-              </Link>
-              <Link href="/login">
-                <a>로그인 해주세요.</a>
-              </Link>
+              <Link
+                href="/login"
+                className="user_photo"
+                aria-label="사용자 사진"
+              ></Link>
+              <Link href="/login">로그인 해주세요.</Link>
             </>
           )}
         </div>
@@ -64,35 +63,35 @@ const Menu = () => {
           </h2>
           <ul className="menu_btn_list">
             <li>
-              <Link href="/">
-                <a className="menu_btn_link">
+              <Link href="/" className="menu_btn_link" passHref>
+                <>
                   <MdOutlineLocalCafe />
                   <span>내카페</span>
-                </a>
+                </>
               </Link>
             </li>
             <li>
-              <Link href="/articles/write">
-                <a className="menu_btn_link">
+              <Link href="/articles/write" className="menu_btn_link" passHref>
+                <>
                   <HiOutlinePencil />
                   <span>글쓰기</span>
-                </a>
+                </>
               </Link>
             </li>
             <li>
-              <Link href="/">
-                <a className="menu_btn_link">
+              <Link href="/" className="menu_btn_link" passHref>
+                <>
                   <VscBellDot />
                   <span>알림설정</span>
-                </a>
+                </>
               </Link>
             </li>
             <li>
-              <Link href="/">
-                <a className="menu_btn_link">
+              <Link href="/" className="menu_btn_link" passHref>
+                <>
                   <BsChatDots />
                   <span>채팅</span>
-                </a>
+                </>
               </Link>
             </li>
           </ul>

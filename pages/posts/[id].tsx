@@ -19,6 +19,7 @@ import Menu from "components/common/Menu";
 import { commentCountSelector } from "state/comment";
 import { CAFE_TITLE } from "constant";
 import { IPostItem } from "types";
+import { inter } from "pages";
 
 const Post = () => {
   const router = useRouter();
@@ -32,10 +33,6 @@ const Post = () => {
   const now = new Date();
   const yyyymmdd = formatDate(now, "YYYY.MM.DD");
   const hhmm = formatDate(now, "hh:mm");
-
-  const handlePrevBtnClick = () => {
-    router.push("/");
-  };
 
   if (isLoading) {
     return <div>loading...</div>;
@@ -52,16 +49,16 @@ const Post = () => {
         </title>
       </Head>
 
-      <Container>
+      <Container className={inter.className}>
         <PostHeader>
           <h2 className="post_title">{post.title}</h2>
 
           <div className="user_area">
-            <Link href="/">
-              <a className="user_photo">
-                <span className="visually_hidden">사용자 사진</span>
-              </a>
-            </Link>
+            <Link
+              href="/"
+              className="user_photo"
+              aria-label="사용자 사진"
+            ></Link>
             <div className="user_post_info">
               <div className="user_name">{post.id}</div>
               <div className="post_info">
@@ -79,18 +76,26 @@ const Post = () => {
         </PostContent>
 
         <BtnList className="fixed_footer">
-          <a
+          <Link
+            href="/"
             role="button"
             className="prev_btn"
-            onClick={handlePrevBtnClick}
             tabIndex={0}
+            passHref
           >
-            <HiMenu />
-            <span>목록으로</span>
-          </a>
+            <>
+              <HiMenu />
+              <span>목록으로</span>
+            </>
+          </Link>
 
-          <Link href="/posts/[id]/comments" as={`/posts/${post.id}/comments`}>
-            <a className="comment_btn">
+          <Link
+            href="/posts/[id]/comments"
+            as={`/posts/${post.id}/comments`}
+            className="comment_btn"
+            passHref
+          >
+            <>
               <FaRegCommentDots />
               {commentsLength > 0 && (
                 <span className="comment_new_icon">
@@ -99,7 +104,7 @@ const Post = () => {
               )}
               <em>{commentsLength}</em>
               <span className="visually_hidden">댓글</span>
-            </a>
+            </>
           </Link>
         </BtnList>
       </Container>
