@@ -11,9 +11,9 @@ import { getPostList, getUrl, useGetPostList } from "hooks/api/useGetPostList";
 import { formatDate } from "utils/format-date";
 
 import { commentCountsSelector } from "state/comment";
-import { tokenSelector } from "state/auth";
 import { ICommentCount, IPostItem } from "types";
 import { CAFE_TITLE, TABS } from "constant";
+import { useSession } from "next-auth/react";
 
 export const inter = Inter({
   weight: ["400", "700"],
@@ -26,6 +26,7 @@ interface IHomeProps {
 }
 
 const Home = ({ activeTab }: IHomeProps) => {
+  const { data: session } = useSession();
   const { postList } = useGetPostList({ activeTab });
 
   const now = new Date();
@@ -39,7 +40,6 @@ const Home = ({ activeTab }: IHomeProps) => {
   const commentCounts = useRecoilValue<ICommentCount[]>(
     commentCountsSelector(idList),
   );
-  const token = useRecoilValue(tokenSelector);
 
   return (
     <>
@@ -95,14 +95,14 @@ const Home = ({ activeTab }: IHomeProps) => {
             ))}
           </ul>
           <Link
-            href={token ? "/myprofile/articles" : "/login"}
+            href={session ? "/myprofile/articles" : "/login"}
             className="join_btn"
             role="button"
             passHref
           >
             <>
-              {token ? <AiOutlineUser /> : <AiOutlineUserAdd />}
-              <span>{token ? "마이프로필" : "가입하기"}</span>
+              {session ? <AiOutlineUser /> : <AiOutlineUserAdd />}
+              <span>{session ? "마이프로필" : "가입하기"}</span>
             </>
           </Link>
         </TabBox>

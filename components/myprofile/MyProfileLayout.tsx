@@ -1,15 +1,12 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
-
-import useAuth from "hooks/useAuth";
+import { signOut, useSession } from "next-auth/react";
 
 import Footer from "components/common/Footer";
 
-import { isLoginSelector, tokenSelector } from "state/auth";
 import { PROFILE_TABS } from "constant";
 
 interface IMyProfileLayoutProps {
@@ -18,18 +15,15 @@ interface IMyProfileLayoutProps {
 
 const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
   const router = useRouter();
-  const auth = useAuth();
+  const { data: session, status } = useSession();
 
-  const token = useRecoilValue(tokenSelector);
-  const isLogin = useRecoilValue(isLoginSelector);
-
-  function handlePrevBtnClick() {
+  const handlePrevBtnClick = () => {
     router.back();
-  }
+  };
 
-  function handleLogoutBtnClick() {
-    auth.logout(token);
-  }
+  const handleLogoutBtnClick = () => {
+    signOut();
+  };
 
   return (
     <>
@@ -43,7 +37,7 @@ const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
           <MdOutlineKeyboardArrowLeft />
         </button>
 
-        {isLogin && (
+        {status === "authenticated" && (
           <button
             type="button"
             className="logout_btn"
@@ -54,10 +48,10 @@ const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
         )}
       </BtnWrap>
 
-      {token ? (
+      {session ? (
         <ProfileHead>
           <div className="user_text">
-            <div className="user_id">{token}</div>
+            <div className="user_id">{session.user.name}</div>
             <div className="user_member_grade">New-user</div>
             <div className="user_visit">
               방문 <span>1</span>

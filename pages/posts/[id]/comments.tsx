@@ -11,6 +11,7 @@ import {
   MdOutlineKeyboardArrowRight,
 } from "react-icons/md";
 import { FaRegCommentDots } from "react-icons/fa";
+import { useSession } from "next-auth/react";
 
 import useGetPostItem from "hooks/api/useGetPostItem";
 import { formatDate } from "utils/format-date";
@@ -23,18 +24,18 @@ import {
   commentsState,
   myCommentsState,
 } from "state/comment";
-import { tokenSelector } from "state/auth";
 import { IMyComment, IPostItem } from "types";
 import { CAFE_TITLE } from "constant";
 
 const Comments = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
   const [value, setValue] = useState("");
   const [registerBtnClass, setRegisterBtnClass] = useState("btn_disabled");
   const commentRef = useRef<HTMLTextAreaElement>(null);
 
-  const router = useRouter();
-  const { id } = router.query;
-
+  const { data: session } = useSession();
   const { data } = useGetPostItem(id);
   const post = (data ?? {}) as IPostItem;
 
@@ -52,7 +53,6 @@ const Comments = () => {
   );
   const setMyComments = useSetRecoilState<IMyComment[]>(myCommentsState);
   const commentsLength = useRecoilValue(commentCountSelector(post.id));
-  const token = useRecoilValue(tokenSelector);
 
   const handlePrevBtnClick = () => {
     router.back();
@@ -153,7 +153,7 @@ const Comments = () => {
                     <>
                       <span className="user_image"></span>
                       <span className="user_nick">
-                        {token ? `${token}` : "-"}
+                        {session ? `${session.user.email}` : "-"}
                       </span>
                     </>
                   </Link>

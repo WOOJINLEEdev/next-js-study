@@ -1,10 +1,16 @@
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import styled from "styled-components";
+import { useRouter } from "next/router";
 
 const OAUTH = ["google", "naver", "kakao", "github", "facebook"];
 
 const Login = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  if (session) {
+    router.push("/myprofile/articles");
+  }
 
   function capitalizeFirstLetter(string: string) {
     switch (string) {
@@ -43,12 +49,6 @@ const Login = () => {
                 );
               })}
             </ul>
-          )}
-
-          {session?.user?.email && (
-            <button type="button" onClick={() => signOut()}>
-              로그아웃
-            </button>
           )}
         </Wrapper>
       </Container>

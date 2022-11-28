@@ -7,17 +7,17 @@ import { MdOutlineLocalCafe } from "react-icons/md";
 import { HiOutlinePencil } from "react-icons/hi";
 import { VscBellDot } from "react-icons/vsc";
 import { BsChatDots } from "react-icons/bs";
+import { useSession } from "next-auth/react";
 
 import MenuList from "components/common/MenuList";
 
 import { menuClickState } from "state/menu";
-import { tokenSelector } from "state/auth";
 
 const Menu = () => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [show, setShow] = useRecoilState(menuClickState);
-  const token = useRecoilValue(tokenSelector);
 
   const storage = globalThis?.sessionStorage;
 
@@ -33,7 +33,7 @@ const Menu = () => {
     <MenuWrap className={show ? "menu_wrap" : "menu_hidden"} show={show}>
       <MenuHeader className="menu_header" onClick={handleMenuHeaderClick}>
         <div className="user_area">
-          {token ? (
+          {session ? (
             <>
               <Link
                 href="/myprofile/articles"
@@ -42,7 +42,7 @@ const Menu = () => {
                 aria-label="사용자 사진"
               ></Link>
               <Link href="/myprofile/articles" className="user_id">
-                {token}
+                {session.user.email}
               </Link>
             </>
           ) : (
