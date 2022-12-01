@@ -1,6 +1,7 @@
+import { useRouter } from "next/router";
 import { useSession, signIn } from "next-auth/react";
 import styled from "styled-components";
-import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 const OAUTH = ["google", "naver", "kakao", "github", "facebook"];
 
@@ -8,9 +9,14 @@ const Login = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
-  if (session) {
-    router.push("/myprofile/articles");
-  }
+  useEffect(() => {
+    if (session) {
+      router.replace("/myprofile/articles");
+    }
+    if (!session) {
+      void router.push("/login");
+    }
+  }, [session]);
 
   function capitalizeFirstLetter(string: string) {
     switch (string) {

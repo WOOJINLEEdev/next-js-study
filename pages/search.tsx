@@ -1,13 +1,19 @@
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 
-import SearchForm from "components/search/SearchForm";
+import SearchForm, { searchResultState } from "components/search/SearchForm";
 import Footer from "components/common/Footer";
+import List from "components/posts/List";
+import ListItem from "components/posts/ListItem";
+
+import { IPostItem } from "types";
 
 const Search = () => {
   const router = useRouter();
+  const searchResult = useRecoilValue(searchResultState);
 
   const handlePrevBtnClick = () => {
     router.back();
@@ -28,9 +34,30 @@ const Search = () => {
         <SearchForm />
       </SearchBar>
 
-      <SearchKeyWord>
-        <p>검색어를 입력하세요</p>
-      </SearchKeyWord>
+      {searchResult.length > 0 && (
+        <SearchResultTitle>
+          검색 결과 총
+          <span className="search_result_length">{searchResult.length}</span>개
+        </SearchResultTitle>
+      )}
+
+      <List>
+        {searchResult.length > 0 ? (
+          searchResult?.map((item: IPostItem) => {
+            return (
+              <ListItem
+                key={`search_result_${item.id}`}
+                item={item}
+                list={searchResult}
+              />
+            );
+          })
+        ) : (
+          <NoSearchResult>
+            <p>검색 결과가 없습니다.</p>
+          </NoSearchResult>
+        )}
+      </List>
     </>
   );
 };
@@ -67,7 +94,7 @@ const SearchBar = styled.div`
   }
 `;
 
-const SearchKeyWord = styled.div`
+const NoSearchResult = styled.div`
   height: calc(100vh - 191px);
   color: ${(props) => props.theme.colors.titleColor};
   background: ${(props) => props.theme.colors.bgColor};
@@ -76,4 +103,27 @@ const SearchKeyWord = styled.div`
   p {
     line-height: calc(100vh - 191px);
   }
+`;
+
+const SearchResultTitle = styled.p`
+  max-width: 960px;
+  padding: 0 12px;
+  margin: 20px auto;
+  font-size: 16px;
+
+  .search_result_length {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 5px;
+  }
+`;
+
+const ListGroup = styled.ul`
+  max-width: 960px;
+  min-height: calc(100vh - 191px);
+  padding: 0 16px;
+  margin: 0 auto;
+  color: ${(props) => props.theme.colors.titleColor};
+  background: ${(props) => props.theme.colors.bgColor};
+  transition: ${(props) => props.theme.transitions[0]};
 `;

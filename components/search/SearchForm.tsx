@@ -1,29 +1,55 @@
-import { ChangeEvent, FormEvent, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useRef } from "react";
 import styled from "styled-components";
 import { GoSearch } from "react-icons/go";
 import { IoIosCloseCircle } from "react-icons/io";
+import axios from "axios";
+import { atom, useRecoilState, useSetRecoilState } from "recoil";
+import { v1 } from "uuid";
+
+import { IPostItem } from "types";
+
+export const searchResultState = atom<IPostItem[]>({
+  key: `searchResultState/${v1()}`,
+  default: [],
+});
+
+export const searchKeywordState = atom({
+  key: `searchKeywordState/${v1()}`,
+  default: "",
+});
 
 const SearchForm = () => {
-  const [searchText, setSearchText] = useState("");
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const handleSearchTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchText(e.currentTarget.value);
+  const [searchKeyword, setSearchKeyword] = useRecoilState(searchKeywordState);
+  const setSearchResult = useSetRecoilState(searchResultState);
+
+  const handleSearchKeywordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchKeyword(e.currentTarget.value.toLowerCase());
   };
 
   const handleRemoveBtnClick = () => {
-    setSearchText("");
+    setSearchKeyword("");
     searchRef?.current?.focus();
   };
 
-  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (searchText.trim().length === 0) {
+    if (searchKeyword.trim().length === 0) {
       return false;
     }
 
-    console.log("searchText:", searchText);
+    try {
+      const res = await axios.get("https://jsonplaceholder.typicode.com/posts");
+      setSearchResult(
+        res.data.filter((data: IPostItem) =>
+          data.title.includes(searchKeyword),
+        ),
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -32,19 +58,19 @@ const SearchForm = () => {
         <GoSearch />
       </div>
 
-      <label htmlFor="searchText" className="visually_hidden">
+      <label htmlFor="searchKeyword" className="visually_hidden">
         검색 입력창
       </label>
       <input
         type="text"
         placeholder="검색어 입력"
-        id="searchText"
-        value={searchText}
-        onChange={handleSearchTextChange}
+        id="searchKeyword"
+        value={searchKeyword}
+        onChange={handleSearchKeywordChange}
         ref={searchRef}
       />
 
-      {searchText.trim().length > 0 ? (
+      {searchKeyword.trim().length > 0 ? (
         <RemoveBtn
           type="button"
           onClick={handleRemoveBtnClick}

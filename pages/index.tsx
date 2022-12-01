@@ -2,18 +2,18 @@ import { GetServerSideProps } from "next";
 import Link from "next/link";
 import Head from "next/head";
 import styled from "styled-components";
-import { useRecoilValue } from "recoil";
 import { dehydrate, QueryClient } from "react-query";
 import { AiOutlineUserAdd, AiOutlineUser } from "react-icons/ai";
 import { Inter } from "@next/font/google";
+import { useSession } from "next-auth/react";
 
 import { getPostList, getUrl, useGetPostList } from "hooks/api/useGetPostList";
-import { formatDate } from "utils/format-date";
 
-import { commentCountsSelector } from "state/comment";
-import { ICommentCount, IPostItem } from "types";
+import List from "components/posts/List";
+import ListItem from "components/posts/ListItem";
+
+import { IPostItem } from "types";
 import { CAFE_TITLE, TABS } from "constant";
-import { useSession } from "next-auth/react";
 
 export const inter = Inter({
   weight: ["400", "700"],
@@ -28,18 +28,6 @@ interface IHomeProps {
 const Home = ({ activeTab }: IHomeProps) => {
   const { data: session } = useSession();
   const { postList } = useGetPostList({ activeTab });
-
-  const now = new Date();
-  const yymmdd = formatDate(now, "YY.MM.DD");
-
-  const idList: number[] =
-    postList?.map((post: IPostItem) => {
-      return post.id;
-    }) ?? [];
-
-  const commentCounts = useRecoilValue<ICommentCount[]>(
-    commentCountsSelector(idList),
-  );
 
   return (
     <>
@@ -107,56 +95,17 @@ const Home = ({ activeTab }: IHomeProps) => {
           </Link>
         </TabBox>
 
-        <ListGroup>
-          {postList?.map((value: IPostItem) => {
+        <List>
+          {postList?.map((item: IPostItem) => {
             return (
-              <ListItem key={String(value.id)}>
-                <Link
-                  href="/posts/[id]"
-                  as={`/posts/${value.id}`}
-                  className={`post_info ${inter.className}`}
-                  tabIndex={0}
-                  passHref
-                >
-                  <>
-                    <strong className="list_title" key={String(value.id)}>
-                      {value.title}
-                    </strong>
-
-                    <div className="user_area">
-                      <span>{value.id}</span>
-                      <span>{yymmdd}</span>
-                      <span>
-                        조회 <span>{value.id}</span>
-                      </span>
-                    </div>
-                  </>
-                </Link>
-                <div className="list_img_comment_wrapper">
-                  <div className="list_img"></div>
-                  <Link
-                    href="/posts/[id]/comments"
-                    as={`/posts/${value.id}/comments`}
-                    className="list_comment"
-                    tabIndex={0}
-                    passHref
-                  >
-                    <>
-                      <span>
-                        {commentCounts.map(
-                          (commentCount) =>
-                            commentCount.postId === value.id &&
-                            commentCount.total,
-                        )}
-                      </span>
-                      <span>댓글</span>
-                    </>
-                  </Link>
-                </div>
-              </ListItem>
+              <ListItem
+                key={`post_item_${item.id}`}
+                item={item}
+                list={postList}
+              />
             );
           })}
-        </ListGroup>
+        </List>
       </Container>
     </>
   );
@@ -310,92 +259,6 @@ const ListGroup = styled.ul`
   color: ${(props) => props.theme.colors.titleColor};
   background: ${(props) => props.theme.colors.bgColor};
   transition: ${(props) => props.theme.transitions[0]};
-`;
-
-const ListItem = styled.li`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  min-height: 56px;
-  padding: 11px 0;
-  border-bottom: 0.5px solid #e6e6e6;
-  word-break: break-word;
-  word-wrap: break-word;
-  &:last-child {
-    border-bottom: 0;
-    padding-bottom: 22px;
-  }
-
-  .post_info {
-    width: 100%;
-    cursor: pointer;
-  }
-
-  .list_title {
-    width: 100%;
-    height: 34px;
-    padding-right: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-
-  .list_img {
-    display: table-cell;
-    margin: 0 0 0 -1px;
-    vertical-align: bottom;
-    width: 56px;
-    height: 56px;
-    background: #efefef;
-    border-radius: 5px;
-  }
-
-  .list_comment {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    text-align: center;
-    width: 36px;
-    min-height: 44px;
-    border-radius: 6px;
-    background-color: #f5f6f8;
-    color: #333;
-    cursor: pointer;
-
-    span {
-      font-size: 10px;
-
-      &:first-child {
-        font-size: 12px;
-        font-weight: bold;
-        margin-bottom: 3px;
-      }
-    }
-  }
-
-  .list_img_comment_wrapper {
-    display: flex;
-    justify-content: space-between;
-    min-width: 95px;
-    max-width: 100px;
-  }
-
-  .user_area {
-    margin-top: 10px;
-    color: #979797;
-    font-size: 12px;
-
-    span {
-      margin-left: 8px;
-
-      &:first-child {
-        margin: 0;
-      }
-    }
-  }
 `;
 
 const TabBox = styled.div`

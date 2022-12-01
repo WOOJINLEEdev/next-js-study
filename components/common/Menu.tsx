@@ -29,6 +29,15 @@ const Menu = () => {
     setShow(false);
   };
 
+  const handleWriteBtnClick = () => {
+    if (!session) {
+      alert("로그인 후 이용 가능합니다.");
+      return;
+    }
+
+    router.push("/articles/write");
+  };
+
   return (
     <MenuWrap className={show ? "menu_wrap" : "menu_hidden"} show={show}>
       <MenuHeader className="menu_header" onClick={handleMenuHeaderClick}>
@@ -71,12 +80,16 @@ const Menu = () => {
               </Link>
             </li>
             <li>
-              <Link href="/articles/write" className="menu_btn_link" passHref>
+              <a
+                role="button"
+                className="menu_btn_link"
+                onClick={handleWriteBtnClick}
+              >
                 <>
                   <HiOutlinePencil />
                   <span>글쓰기</span>
                 </>
-              </Link>
+              </a>
             </li>
             <li>
               <Link href="/" className="menu_btn_link" passHref>

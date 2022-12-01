@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
@@ -16,6 +16,12 @@ interface IMyProfileLayoutProps {
 const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
   const router = useRouter();
   const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (!session) {
+      router.replace("/");
+    }
+  }, []);
 
   const handlePrevBtnClick = () => {
     router.back();
@@ -51,8 +57,8 @@ const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
       {session ? (
         <ProfileHead>
           <div className="user_text">
-            <div className="user_id">{session.user.name}</div>
-            <div className="user_member_grade">New-user</div>
+            <div className="user_id">{session.user.email}</div>
+            <div className="user_name">{session.user.name}</div>
             <div className="user_visit">
               방문 <span>1</span>
             </div>
@@ -85,10 +91,7 @@ const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
                 className={router.pathname === tab.path ? "is_active" : ""}
                 value={tab.value}
               >
-                <div
-                  className="tab_link"
-                  onClick={() => router.replace(tab.path)}
-                >
+                <div className="tab_link" onClick={() => router.push(tab.path)}>
                   {tab.name}
                 </div>
               </li>
@@ -149,7 +152,16 @@ const ProfileHead = styled.div`
     font-size: 21px;
     font-weight: bold;
 
-    .user_member_grade,
+    .user_id {
+      display: inline-block;
+      max-width: 90%;
+      height: 25px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user_name,
     .user_visit {
       font-size: 13px;
       font-weight: normal;
