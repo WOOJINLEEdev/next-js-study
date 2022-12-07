@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowLeft } from "react-icons/md";
 import { signOut, useSession } from "next-auth/react";
@@ -16,12 +16,6 @@ interface IMyProfileLayoutProps {
 const MyProfileLayout = ({ children }: IMyProfileLayoutProps) => {
   const router = useRouter();
   const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (!session) {
-      router.replace("/");
-    }
-  }, []);
 
   const handlePrevBtnClick = () => {
     router.back();

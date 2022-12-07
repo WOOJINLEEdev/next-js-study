@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { GetServerSideProps } from "next";
+import { unstable_getServerSession } from "next-auth";
 import { ReactElement } from "react";
-import styled from "styled-components";
 import { useRecoilValue } from "recoil";
+import styled from "styled-components";
 
 import { formatDate } from "utils/format-date";
 
+import { authOptions } from "pages/api/auth/[...nextauth]";
 import MyProfileLayout from "components/myprofile/MyProfileLayout";
 
 import { myCommentsState } from "state/comment";
@@ -54,11 +57,34 @@ const MyComments = () => {
   );
 };
 
-export default MyComments;
-
 MyComments.getLayout = function getLayout(page: ReactElement) {
   return <>{page}</>;
 };
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions,
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+};
+
+export default MyComments;
 
 const ListItem = styled.li`
   position: relative;

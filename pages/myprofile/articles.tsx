@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { ReactElement } from "react";
 import styled from "styled-components";
+import { unstable_getServerSession } from "next-auth/next";
 
 import { formatDate } from "utils/format-date";
 
+import { authOptions } from "pages/api/auth/[...nextauth]";
 import MyProfileLayout from "components/myprofile/MyProfileLayout";
 
 import { IData } from "types";
+import { GetServerSideProps } from "next";
 
 const MyArticles = () => {
   const datas: IData[] = [];
@@ -46,11 +49,34 @@ const MyArticles = () => {
   );
 };
 
-export default MyArticles;
-
 MyArticles.getLayout = function getLayout(page: ReactElement) {
   return <>{page}</>;
 };
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await unstable_getServerSession(
+    context.req,
+    context.res,
+    authOptions,
+  );
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      session,
+    },
+  };
+};
+
+export default MyArticles;
 
 const ListItem = styled.li`
   position: relative;
