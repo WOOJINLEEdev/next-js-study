@@ -1,21 +1,20 @@
+import { GetServerSideProps } from "next";
 import Link from "next/link";
 import { ReactElement } from "react";
 import styled from "styled-components";
 import { unstable_getServerSession } from "next-auth/next";
 
-import { formatDate } from "utils/format-date";
+import useFormatDate from "hooks/useFormatDate";
 
 import { authOptions } from "pages/api/auth/[...nextauth]";
 import MyProfileLayout from "components/myprofile/MyProfileLayout";
 
 import { IData } from "types";
-import { GetServerSideProps } from "next";
 
 const MyArticles = () => {
   const datas: IData[] = [];
-  const now = new Date();
-  const yyyymmdd = formatDate(now, "YYYY.MM.DD");
-  const hhmm = formatDate(now, "hh:mm");
+
+  const { date, time } = useFormatDate();
 
   return (
     <MyProfileLayout>
@@ -33,7 +32,7 @@ const MyArticles = () => {
 
                 <div className="date">
                   <span>
-                    {yyyymmdd} {hhmm}
+                    {date} {time}
                   </span>
                 </div>
               </div>

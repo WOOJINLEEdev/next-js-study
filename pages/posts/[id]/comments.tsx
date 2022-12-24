@@ -14,7 +14,7 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 
 import useGetPostItem from "hooks/api/useGetPostItem";
-import { formatDate } from "utils/format-date";
+import useFormatDate from "hooks/useFormatDate";
 
 import { inter } from "pages";
 import Footer from "components/common/Footer";
@@ -39,9 +39,7 @@ const Comments = () => {
   const { data } = useGetPostItem(id);
   const post = (data ?? {}) as IPostItem;
 
-  const now = new Date();
-  const yyyymmdd = formatDate(now, "YYYY.MM.DD");
-  const hhmm = formatDate(now, "hh:mm");
+  const { date, time } = useFormatDate();
 
   useEffect(() => {
     value.trim().length > 0 && setRegisterBtnClass("btn_register");
@@ -160,8 +158,8 @@ const Comments = () => {
                 </div>
                 <p className="comment_text">{comment}</p>
                 <div className="comment_footer">
-                  <span>{yyyymmdd}</span>
-                  <span>{hhmm}</span>
+                  <span>{date}</span>
+                  <span>{time}</span>
                 </div>
               </CommentItem>
             ))}

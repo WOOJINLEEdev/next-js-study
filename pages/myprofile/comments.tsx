@@ -5,7 +5,7 @@ import { ReactElement } from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 
-import { formatDate } from "utils/format-date";
+import useFormatDate from "hooks/useFormatDate";
 
 import { authOptions } from "pages/api/auth/[...nextauth]";
 import MyProfileLayout from "components/myprofile/MyProfileLayout";
@@ -14,10 +14,9 @@ import { myCommentsState } from "state/comment";
 import { IMyComment } from "types";
 
 const MyComments = () => {
-  const now = new Date();
-  const yyyymmdd = formatDate(now, "YYYY.MM.DD");
-  const hhmm = formatDate(now, "hh:mm");
   const myComments = useRecoilValue(myCommentsState);
+
+  const { date, time } = useFormatDate();
 
   return (
     <MyProfileLayout>
@@ -33,7 +32,7 @@ const MyComments = () => {
 
                 <div className="date">
                   <span>
-                    {yyyymmdd} {hhmm}
+                    {date} {time}
                   </span>
                 </div>
 

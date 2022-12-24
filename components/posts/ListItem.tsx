@@ -4,10 +4,9 @@ import styled from "styled-components";
 import { inter } from "pages";
 import { useRecoilValue } from "recoil";
 
-import { formatDate } from "utils/format-date";
-
 import { commentCountsSelector } from "state/comment";
 import { ICommentCount, IPostItem } from "types";
+import useFormatDate from "hooks/useFormatDate";
 
 interface IListItemProps {
   item: IPostItem;
@@ -15,8 +14,7 @@ interface IListItemProps {
 }
 
 const ListItem = ({ item, list }: IListItemProps) => {
-  const now = new Date();
-  const yymmdd = formatDate(now, "YY.MM.DD");
+  const { date } = useFormatDate();
 
   const getIdList = (data: IPostItem[]) => {
     return (
@@ -44,7 +42,7 @@ const ListItem = ({ item, list }: IListItemProps) => {
 
           <div className="user_area">
             <span>{item.id}</span>
-            <span>{yymmdd}</span>
+            <span>{date}</span>
             <span>
               조회 <span>{item.id}</span>
             </span>

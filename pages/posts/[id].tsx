@@ -11,28 +11,25 @@ import { FaRegCommentDots } from "react-icons/fa";
 import { HiMenu } from "react-icons/hi";
 
 import useGetPostItem from "hooks/api/useGetPostItem";
-import { formatDate } from "utils/format-date";
+import useFormatDate from "hooks/useFormatDate";
 
+import { inter } from "pages";
 import Header from "components/common/Header";
 import Menu from "components/common/Menu";
 
 import { commentCountSelector } from "state/comment";
 import { CAFE_TITLE } from "constant";
 import { IPostItem } from "types";
-import { inter } from "pages";
 
 const Post = () => {
   const router = useRouter();
   const { id } = router.query;
 
   const { data, isLoading } = useGetPostItem(id);
+  const { date, time } = useFormatDate();
+
   const post = (data ?? {}) as IPostItem;
-
   const commentsLength = useRecoilValue<number>(commentCountSelector(post?.id));
-
-  const now = new Date();
-  const yyyymmdd = formatDate(now, "YYYY.MM.DD");
-  const hhmm = formatDate(now, "hh:mm");
 
   if (isLoading) {
     return <div>loading...</div>;
@@ -63,7 +60,7 @@ const Post = () => {
               <div className="user_name">{post.id}</div>
               <div className="post_info">
                 <span className="post_date">
-                  {yyyymmdd} {hhmm}
+                  {date} {time}
                 </span>
                 <span className="post_check_count">조회 {post.id}</span>
               </div>
