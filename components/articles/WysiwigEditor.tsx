@@ -20,6 +20,7 @@ import { ITuiEditorWithForwardedProps } from "components/articles/TuiEditorWrapp
 
 interface IProps extends EditorProps {
   onChange: (value: string) => void;
+  onLoad?: () => void;
   valueType?: "markdown" | "html";
 }
 
@@ -52,6 +53,12 @@ const WysiwigEditor = (props: IProps) => {
     console.log("theme", getTheme);
   }, [getTheme, theme]);
 
+  useEffect(() => {
+    if (editorRef.current) {
+      props.onLoad?.();
+    }
+  }, [editorRef, props]);
+
   const handleChange = useCallback(() => {
     if (!editorRef.current) {
       return;
@@ -67,7 +74,7 @@ const WysiwigEditor = (props: IProps) => {
 
   return (
     <div
-      className={`editor-panel-editor ${
+      className={`editor_panel_editor ${
         getTheme === "dark" && " toastui-editor-dark"
       }`}
     >

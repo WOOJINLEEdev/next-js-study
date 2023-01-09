@@ -12,6 +12,9 @@ import {
 import { RecoilRoot } from "recoil";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { SessionProvider } from "next-auth/react";
+import NProgress from "nprogress";
+
+import "nprogress/nprogress.css";
 
 import { useScrollRestoration } from "hooks/useScrollRestoration";
 
@@ -36,6 +39,8 @@ function MyApp({
 }: AppPropsWithLayout) {
   const router = useRouter();
   useScrollRestoration(router);
+
+  NProgress.configure({ showSpinner: false });
 
   const [scrollState, setScrollState] = useState(false);
   const [queryClient] = useState(
@@ -69,6 +74,26 @@ function MyApp({
       window.removeEventListener("scroll", handleScrollY);
     };
   }, [handleScrollY]);
+
+  useEffect(() => {
+    const handleStart = (url: string) => {
+      NProgress.start();
+    };
+
+    const handleStop = () => {
+      NProgress.done();
+    };
+
+    router.events.on("routeChangeStart", handleStart);
+    router.events.on("routeChangeComplete", handleStop);
+    router.events.on("routeChangeError", handleStop);
+
+    return () => {
+      router.events.off("routeChangeStart", handleStart);
+      router.events.off("routeChangeComplete", handleStop);
+      router.events.off("routeChangeError", handleStop);
+    };
+  }, [router]);
 
   useEffect(() => storePathValues, [router.asPath]);
 

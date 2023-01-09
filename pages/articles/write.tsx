@@ -2,13 +2,16 @@ import dynamic from "next/dynamic";
 import { useState, useRef, useEffect, useCallback, ChangeEvent } from "react";
 import styled from "styled-components";
 
+import Loading from "components/common/Loading";
+
 const WysiwigEditor = dynamic(
   () => import("components/articles/WysiwigEditor"),
-  { loading: () => <p>The Editor is loading...</p>, ssr: false },
+  { ssr: false },
 );
 
 const Write: React.FC = () => {
-  const [articleTitle, setArticleTitle] = useState<string>("");
+  const [articleTitle, setArticleTitle] = useState("");
+  const [isLoadingEditor, setIsLoadingEditor] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -25,6 +28,7 @@ const Write: React.FC = () => {
 
   return (
     <Container>
+      {isLoadingEditor && <Loading />}
       <div className="article_wrap">
         <div className="article_btn_wrap">
           <button type="button" className="article_btn_register">
@@ -44,7 +48,13 @@ const Write: React.FC = () => {
           onChange={handleTitleChange}
           ref={inputRef}
         />
-        <WysiwigEditor valueType="html" onChange={handleEditorChange} />
+        <WysiwigEditor
+          valueType="html"
+          onChange={handleEditorChange}
+          onLoad={() => {
+            setIsLoadingEditor(false);
+          }}
+        />
       </div>
     </Container>
   );
