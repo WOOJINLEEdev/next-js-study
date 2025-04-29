@@ -96,12 +96,12 @@ const Home = ({ activeTab }: IHomeProps) => {
         </TabBox>
 
         <List>
-          {postList?.map((item: IPostItem) => {
+          {(postList ?? []).map((item: IPostItem) => {
             return (
               <ListItem
                 key={`post_item_${item.id}`}
                 item={item}
-                list={postList}
+                list={postList ?? []}
               />
             );
           })}
