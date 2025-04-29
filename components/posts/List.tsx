@@ -1,7 +1,7 @@
-import { FC } from "react";
+import { ReactNode } from "react";
 import styled from "styled-components";
 
-const List: FC = ({ children }) => {
+const List = ({ children }: { children?: ReactNode }) => {
   return <ListContainer>{children}</ListContainer>;
 };
 
