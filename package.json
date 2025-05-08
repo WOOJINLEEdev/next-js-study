@@ -11,7 +11,7 @@
     "lint": "next lint",
     "gen:sitemap": "node scripts/sitemap.js",
     "restart": "npm run build && npm run start",
-    "init:db": "dotenv -e .env.local -- npx prisma db push  --accept-data-loss",
+    "init:db": "dotenv -e .env -- npx prisma db push --accept-data-loss",
     "postinstall": "prisma generate"
   },
   "dependencies": {
